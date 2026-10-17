@@ -1,0 +1,2802 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>FinCockpit • Gestão & Produtividade Financeira</title>
+
+    <!-- Meta Tags para SEO, Vercel & PWA -->
+    <meta name="description" content="FinCockpit: Plataforma executiva de controle de tarefas, rotina diária constante, cronograma e cálculos financeiros corporativos.">
+    <meta name="theme-color" content="#0ea5e9" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b1528" media="(prefers-color-scheme: dark)">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="FinCockpit">
+
+    <!-- Open Graph / Redes Sociais (WhatsApp, Telegram, LinkedIn, etc.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="FinCockpit • Gestão & Produtividade Financeira">
+    <meta property="og:description" content="Espaço executivo e acolhedor para acompanhamento diário, rotinas constantes e produtividade financeira.">
+    <meta property="og:locale" content="pt_BR">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="FinCockpit • Gestão & Produtividade Financeira">
+    <meta name="twitter:description" content="Espaço executivo e acolhedor para acompanhamento diário, rotinas constantes e produtividade financeira.">
+
+    <!-- Favicon SVG Embutido de Alta Resolução (Sem necessidade de arquivos externos) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2338aef7'/%3E%3Cstop offset='50%25' stop-color='%230ea5e9'/%3E%3Cstop offset='100%25' stop-color='%23f472b6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='26' fill='url(%23g)'/%3E%3Cpath d='M50 24l4 14 14 4-14 4-4 14-4-14-14-4 14-4z' fill='%23ffffff'/%3E%3Ccircle cx='70' cy='30' r='5' fill='%23ffe4e6'/%3E%3Ccircle cx='30' cy='68' r='4' fill='%23e0f2fe'/%3E%3Cpath d='M65 65c-4 5-11 5-15 0-4-5-4-12 0-17l15 17z' fill='rgba(255,255,255,0.4)'/%3E%3C/svg%3E">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6 Icons CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts: Plus Jakarta Sans / Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Tailwind Config - Feminine Blue Theme -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'Segoe UI', 'sans-serif'],
+                    },
+                    colors: {
+                        // Paleta Azul Suave, Elegante e Feminina
+                        fem: {
+                            50: '#f0f7ff',
+                            100: '#e0f0fe',
+                            200: '#bae2fd',
+                            300: '#7cc7fb',
+                            400: '#38aef7',
+                            500: '#0ea5e9', // Azul Céu Vibrante
+                            600: '#0284c7', // Azul Royal Elegante
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            navy: '#0b1528',
+                            cardDark: '#13203c',
+                            borderDark: '#1e3258',
+                        },
+                        pastel: {
+                            baby: '#dbeafe',
+                            sky: '#e0f2fe',
+                            periwinkle: '#e0e7ff',
+                            lavender: '#f3e8ff',
+                            blush: '#fce7f3',
+                            rose: '#ffe4e6',
+                            mint: '#dcfce7',
+                        },
+                        accent: {
+                            pink: '#f472b6',
+                            rose: '#fb7185',
+                            violet: '#a78bfa',
+                            indigo: '#818cf8',
+                            teal: '#2dd4bf',
+                        }
+                    },
+                    boxShadow: {
+                        'soft-blue': '0 4px 20px -2px rgba(14, 165, 233, 0.12)',
+                        'soft-pink': '0 4px 20px -2px rgba(244, 114, 182, 0.15)',
+                        'card-light': '0 2px 12px -1px rgba(2, 132, 199, 0.06)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f4f8fe;
+            color: #1e293b;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+        .dark body {
+            background-color: #0b1528;
+            color: #f1f5f9;
+        }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: softFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes softFadeIn { 
+            from { opacity: 0; transform: translateY(6px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        /* Custom Scrollbar suave */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        .dark ::-webkit-scrollbar-thumb { background: #2a3e63; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #3b5280; }
+        
+        /* Toast Notification com animação suave */
+        .toast {
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: translateY(160%);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Glassmorphism sutil */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+        }
+        .dark .glass-panel {
+            background: rgba(19, 32, 60, 0.85);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden antialiased select-none">
+    
+    <!-- Backdrop para fechar o menu no mobile ao clicar fora -->
+    <div id="sidebar-backdrop" onclick="app.closeSidebar()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 hidden lg:hidden transition-opacity duration-300"></div>
+
+    <!-- Sidebar Lateral Elegante (Responsiva: Drawer deslizante no mobile e fixa no desktop) -->
+    <aside id="sidebar" class="w-72 bg-white/95 dark:bg-[#101c36] border-r border-sky-100 dark:border-fem-borderDark flex flex-col z-50 transition-transform duration-300 ease-in-out flex-shrink-0 shadow-soft-blue fixed inset-y-0 left-0 -translate-x-full lg:relative lg:translate-x-0">
+        <!-- Logo e Identidade Visual Feminina & Profissional -->
+        <div class="h-20 flex items-center justify-between px-6 border-b border-sky-100/80 dark:border-fem-borderDark">
+            <div class="flex items-center">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-sky-400 via-fem-500 to-accent-indigo flex items-center justify-center text-white shadow-md shadow-sky-200 dark:shadow-none mr-3.5 flex-shrink-0">
+                    <i class="fas fa-sparkles text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-extrabold tracking-tight bg-gradient-to-r from-fem-700 via-fem-500 to-accent-pink bg-clip-text text-transparent dark:from-sky-300 dark:to-pink-300">
+                        FinCockpit
+                    </h1>
+                    <p class="text-[11px] font-medium text-fem-600/70 dark:text-sky-300/60 -mt-0.5 flex items-center gap-1">
+                        <span>Espaço Produtivo</span> <i class="fas fa-heart text-[8px] text-pink-400"></i>
+                    </p>
+                </div>
+            </div>
+            <!-- Botão Fechar Drawer no Mobile -->
+            <button onclick="app.closeSidebar()" class="lg:hidden p-2 text-slate-400 hover:text-pink-500 rounded-xl transition-colors" title="Fechar menu">
+                <i class="fas fa-times text-base"></i>
+            </button>
+        </div>
+
+        <!-- Links de Navegação -->
+        <nav class="flex-1 py-5 space-y-1.5 px-3.5 overflow-y-auto">
+            <button onclick="app.switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center px-3.5 py-3 text-sm font-semibold rounded-2xl bg-gradient-to-r from-sky-100/90 to-pastel-periwinkle text-fem-700 dark:from-sky-900/40 dark:to-indigo-950/40 dark:text-sky-200 shadow-sm transition-all duration-200">
+                <i class="fas fa-home-heart w-6 text-center mr-2 text-fem-500 dark:text-sky-400 text-base"></i>
+                <span>Visão Geral</span>
+            </button>
+            
+            <button onclick="app.switchTab('timeline')" id="nav-timeline" class="nav-btn w-full flex items-center px-3.5 py-3 text-sm font-semibold rounded-2xl text-slate-600 hover:bg-sky-50/80 dark:text-slate-300 dark:hover:bg-fem-cardDark transition-all duration-200">
+                <i class="fas fa-calendar-star w-6 text-center mr-2 text-fem-400 dark:text-sky-300 text-base"></i>
+                <div class="flex items-center justify-between flex-1">
+                    <span>Cronograma (Dia•Mês•Ano)</span>
+                    <span class="text-[10px] bg-accent-pink/15 text-accent-pink font-bold px-1.5 py-0.5 rounded-full">Novo</span>
+                </div>
+            </button>
+
+            <button onclick="app.switchTab('daily-routine')" id="nav-daily-routine" class="nav-btn w-full flex items-center px-3.5 py-3 text-sm font-semibold rounded-2xl text-slate-600 hover:bg-sky-50/80 dark:text-slate-300 dark:hover:bg-fem-cardDark transition-all duration-200">
+                <i class="fas fa-repeat w-6 text-center mr-2 text-fem-400 dark:text-sky-300 text-base"></i>
+                <div class="flex items-center justify-between flex-1">
+                    <span>Atividades Diárias Constantes</span>
+                    <span id="nav-daily-badge" class="text-[10px] bg-sky-100 dark:bg-sky-900/60 text-fem-700 dark:text-sky-300 font-bold px-1.5 py-0.5 rounded-full">Rotina</span>
+                </div>
+            </button>
+
+            <button onclick="app.switchTab('tasks')" id="nav-tasks" class="nav-btn w-full flex items-center px-3.5 py-3 text-sm font-semibold rounded-2xl text-slate-600 hover:bg-sky-50/80 dark:text-slate-300 dark:hover:bg-fem-cardDark transition-all duration-200">
+                <i class="fas fa-tasks-alt w-6 text-center mr-2 text-fem-400 dark:text-sky-300 text-base"></i>
+                <span>Gerenciador de Tarefas</span>
+            </button>
+
+            <button onclick="app.switchTab('checklist')" id="nav-checklist" class="nav-btn w-full flex items-center px-3.5 py-3 text-sm font-semibold rounded-2xl text-slate-600 hover:bg-sky-50/80 dark:text-slate-300 dark:hover:bg-fem-cardDark transition-all duration-200">
+                <i class="fas fa-check-circle w-6 text-center mr-2 text-fem-400 dark:text-sky-300 text-base"></i>
+                <span>Checklist do Dia</span>
+            </button>
+
+            <button onclick="app.switchTab('performance')" id="nav-performance" class="nav-btn w-full flex items-center px-3.5 py-3 text-sm font-semibold rounded-2xl text-slate-600 hover:bg-sky-50/80 dark:text-slate-300 dark:hover:bg-fem-cardDark transition-all duration-200">
+                <i class="fas fa-chart-pie-alt w-6 text-center mr-2 text-fem-400 dark:text-sky-300 text-base"></i>
+                <span>Histórico & Performance</span>
+            </button>
+
+            <button onclick="app.switchTab('calculator')" id="nav-calculator" class="nav-btn w-full flex items-center px-3.5 py-3 text-sm font-semibold rounded-2xl text-slate-600 hover:bg-sky-50/80 dark:text-slate-300 dark:hover:bg-fem-cardDark transition-all duration-200">
+                <i class="fas fa-calculator-alt w-6 text-center mr-2 text-fem-400 dark:text-sky-300 text-base"></i>
+                <span>Calculadora Financeira</span>
+            </button>
+        </nav>
+
+        <!-- Toggle Modo Claro / Escuro -->
+        <div class="p-4 border-t border-sky-100/80 dark:border-fem-borderDark bg-sky-50/40 dark:bg-fem-cardDark/40">
+            <button onclick="app.toggleTheme()" class="w-full flex items-center justify-between px-4 py-2.5 rounded-2xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-cardDark text-slate-700 dark:text-slate-200 hover:shadow-sm hover:border-fem-300 transition-all text-xs font-bold">
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-moon text-indigo-400 dark:hidden text-sm"></i>
+                    <i class="fas fa-sun text-amber-300 hidden dark:block text-sm"></i>
+                    <span class="dark:hidden">Modo Escuro</span>
+                    <span class="hidden dark:inline">Modo Claro</span>
+                </span>
+                <span class="text-[10px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/60 text-fem-600 dark:text-sky-300">
+                    Alternar
+                </span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Área Principal da Aplicação -->
+    <main class="flex-1 flex flex-col overflow-hidden relative w-full">
+        <!-- Barra de Cabeçalho Superior -->
+        <header class="h-20 bg-white/80 dark:bg-[#101c36]/90 backdrop-blur-md border-b border-sky-100 dark:border-fem-borderDark flex items-center justify-between px-4 sm:px-8 z-10 flex-shrink-0 transition-colors">
+            <div class="flex items-center">
+                <!-- Botão Hamburger para Mobile / Telas Menores -->
+                <button onclick="app.toggleSidebar()" class="lg:hidden p-2.5 rounded-2xl text-slate-600 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-fem-navy mr-3 transition-colors border border-sky-100 dark:border-fem-borderDark shadow-xs" title="Menu de navegação">
+                    <i class="fas fa-bars text-base"></i>
+                </button>
+                <div>
+                    <h2 id="page-title" class="text-lg sm:text-xl font-extrabold text-slate-800 dark:text-white flex items-center gap-2">
+                        Visão Geral
+                    </h2>
+                    <p id="page-subtitle" class="text-[11px] sm:text-xs text-slate-500 dark:text-sky-300/70 font-medium truncate max-w-[200px] sm:max-w-none">
+                        Acompanhamento executivo do dia a dia
+                    </p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <!-- Data Atual Formatada -->
+                <div class="text-xs font-bold text-fem-800 dark:text-sky-200 flex items-center bg-sky-50 dark:bg-fem-cardDark border border-sky-200/80 dark:border-fem-borderDark px-3.5 py-1.5 rounded-2xl shadow-card-light">
+                    <i class="far fa-calendar-heart mr-2 text-fem-500 dark:text-accent-pink"></i>
+                    <span id="current-date">--</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Alerta Toast de Salvamento Automático -->
+        <div id="toast" class="toast fixed bottom-6 right-6 bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 px-5 py-3 rounded-2xl shadow-2xl z-50 flex items-center gap-3 border border-sky-400/30 backdrop-blur-sm">
+            <div class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 dark:text-emerald-600 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-check text-xs"></i>
+            </div>
+            <div>
+                <div class="font-bold text-xs" id="toast-title">Salvo com Sucesso</div>
+                <div class="text-[11px] text-slate-300 dark:text-slate-600 font-medium" id="toast-msg">Seus dados estão protegidos localmente.</div>
+            </div>
+        </div>
+
+        <!-- Conteúdo Scrollável das Abas -->
+        <div class="flex-1 overflow-auto p-6 md:p-8 bg-[#f4f8fe] dark:bg-[#0b1528] transition-colors">
+            
+            <!-- ============================================== -->
+            <!-- ABA 1: VISÃO GERAL (DASHBOARD)                 -->
+            <!-- ============================================== -->
+            <div id="tab-dashboard" class="tab-content active space-y-6">
+                <!-- Cards de Indicadores (KPIs) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white dark:bg-fem-cardDark p-5 rounded-3xl border border-sky-100 dark:border-fem-borderDark shadow-card-light flex items-center justify-between">
+                        <div>
+                            <div class="text-[11px] font-bold text-slate-500 dark:text-sky-300/70 uppercase tracking-wider">Pendentes Hoje</div>
+                            <div class="text-2xl font-black text-slate-800 dark:text-white mt-1" id="dash-count-pend">0</div>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-sky-100 dark:bg-sky-950/60 text-fem-500 dark:text-sky-300 flex items-center justify-center text-lg">
+                            <i class="far fa-clock"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-fem-cardDark p-5 rounded-3xl border border-pink-100 dark:border-fem-borderDark shadow-card-light flex items-center justify-between">
+                        <div>
+                            <div class="text-[11px] font-bold text-accent-pink uppercase tracking-wider">Alta Prioridade</div>
+                            <div class="text-2xl font-black text-pink-600 dark:text-pink-400 mt-1" id="dash-count-high">0</div>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-pink-50 dark:bg-pink-950/40 text-accent-pink flex items-center justify-center text-lg">
+                            <i class="fas fa-fire-alt"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-fem-cardDark p-5 rounded-3xl border border-emerald-100 dark:border-fem-borderDark shadow-card-light flex items-center justify-between">
+                        <div>
+                            <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Concluídas Hoje</div>
+                            <div class="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1" id="dash-count-done">0</div>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-500 flex items-center justify-center text-lg">
+                            <i class="fas fa-badge-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-fem-cardDark p-5 rounded-3xl border border-sky-100 dark:border-fem-borderDark shadow-card-light flex items-center justify-between">
+                        <div>
+                            <div class="text-[11px] font-bold text-slate-500 dark:text-sky-300/70 uppercase tracking-wider">Produtividade</div>
+                            <div class="text-2xl font-black text-fem-600 dark:text-sky-300 mt-1" id="dash-productivity">0%</div>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-400 to-accent-indigo text-white flex items-center justify-center text-lg shadow-sm">
+                            <i class="fas fa-sparkles"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid Principal: Tarefas Prioritárias & Lembretes -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Coluna de Tarefas (2 Colunas) -->
+                    <div class="lg:col-span-2 space-y-5">
+                        
+                        <!-- Atividades Constantes do Dia (Rotina Fixa de Todo Dia) -->
+                        <div class="bg-white dark:bg-fem-cardDark rounded-3xl border border-sky-100 dark:border-fem-borderDark shadow-card-light overflow-hidden">
+                            <div class="px-6 py-4 bg-gradient-to-r from-sky-50 via-pastel-baby/40 to-transparent dark:from-fem-navy/80 dark:to-transparent border-b border-sky-100 dark:border-fem-borderDark flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-sky-400 to-fem-500 text-white flex items-center justify-center text-xs shadow-sm">
+                                        <i class="fas fa-repeat"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-sm font-extrabold text-slate-800 dark:text-white flex items-center gap-2">
+                                            <span>Atividades Diárias Constantes</span>
+                                            <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-950/70 text-fem-700 dark:text-sky-300">Rotina</span>
+                                        </h3>
+                                        <p class="text-[11px] text-slate-400">Demandas fixas de todo dia • Adicione ou retire livremente</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span id="dash-daily-progress-badge" class="text-xs font-black text-fem-600 dark:text-sky-300 bg-white dark:bg-fem-cardDark px-3 py-1 rounded-xl border border-sky-100 dark:border-fem-borderDark shadow-sm">
+                                        0 de 0 feitas
+                                    </span>
+                                    <button onclick="app.switchTab('daily-routine')" class="text-xs font-bold text-fem-600 dark:text-sky-300 hover:text-fem-700 p-2 hover:bg-sky-100/50 rounded-xl transition-colors" title="Abrir painel completo de rotina diária">
+                                        <i class="fas fa-sliders-h"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="p-5 space-y-4">
+                                <!-- Barra de Progresso Rápida da Rotina -->
+                                <div>
+                                    <div class="flex justify-between items-center text-[11px] font-bold text-slate-400 mb-1.5">
+                                        <span>Progresso das Atividades Diárias</span>
+                                        <span id="dash-daily-pct" class="text-fem-600 dark:text-sky-300">0%</span>
+                                    </div>
+                                    <div class="w-full bg-sky-100/70 dark:bg-fem-navy rounded-full h-2">
+                                        <div id="dash-daily-progress-bar" class="bg-gradient-to-r from-sky-400 via-fem-500 to-accent-teal h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Lista das Atividades Diárias no Dashboard -->
+                                <div id="dash-daily-list" class="space-y-2.5 max-h-[290px] overflow-y-auto pr-1"></div>
+                                <div id="dash-daily-empty" class="text-xs text-slate-400 italic text-center py-6 hidden">
+                                    Nenhuma atividade diária cadastrada no momento. Adicione abaixo quando quiser!
+                                </div>
+
+                                <!-- Formulário Rápido de Adição Direto no Dashboard -->
+                                <form onsubmit="app.quickAddDailyFromDash(event)" class="pt-3 border-t border-sky-100 dark:border-fem-borderDark flex flex-col sm:flex-row items-center gap-2">
+                                    <input type="text" id="dash-daily-input" placeholder="+ Adicionar nova demanda para todo dia..." required class="w-full sm:flex-1 text-xs font-semibold rounded-xl border border-sky-200 dark:border-fem-borderDark bg-sky-50/40 dark:bg-fem-navy dark:text-white px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-fem-400">
+                                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                                        <select id="dash-daily-period" class="flex-1 sm:flex-initial text-xs font-bold rounded-xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-cardDark dark:text-white px-2.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-fem-400">
+                                            <option value="Manhã">🌅 Manhã</option>
+                                            <option value="Tarde">☀️ Tarde</option>
+                                            <option value="Final do Dia">🌙 Final</option>
+                                            <option value="Qualquer Horário">⚡ Livre</option>
+                                        </select>
+                                        <button type="submit" class="bg-fem-500 hover:bg-fem-600 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl shadow-sm transition-colors flex-shrink-0">
+                                            Adicionar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Alta Prioridade (Destaque Evidente) -->
+                        <div class="bg-white dark:bg-fem-cardDark rounded-3xl border-2 border-pink-200/80 dark:border-pink-900/50 shadow-soft-pink overflow-hidden">
+                            <div class="px-6 py-4 bg-gradient-to-r from-pink-50/90 to-rose-50/50 dark:from-pink-950/30 dark:to-transparent border-b border-pink-100 dark:border-pink-900/40 flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-3 h-3 rounded-full bg-accent-pink animate-pulse"></span>
+                                    <h3 class="text-sm font-extrabold text-pink-700 dark:text-pink-300 uppercase tracking-wider">
+                                        Alta Prioridade • Atenção Imediata
+                                    </h3>
+                                </div>
+                                <span class="text-[11px] font-bold text-pink-500 bg-white/80 dark:bg-pink-950/60 px-2.5 py-0.5 rounded-full border border-pink-200 dark:border-pink-800">
+                                    Crítico
+                                </span>
+                            </div>
+                            <div class="p-5">
+                                <div id="dash-tasks-high" class="space-y-3"></div>
+                                <div id="dash-high-empty" class="text-xs text-slate-400 italic text-center py-6 flex flex-col items-center gap-1.5">
+                                    <i class="far fa-sun-cloud text-2xl text-pink-300"></i>
+                                    <span>Tudo calmo! Nenhuma tarefa crítica pendente.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Média Prioridade -->
+                        <div class="bg-white dark:bg-fem-cardDark rounded-3xl border border-sky-100 dark:border-fem-borderDark shadow-card-light overflow-hidden">
+                            <div class="px-6 py-4 bg-sky-50/50 dark:bg-fem-borderDark/20 border-b border-sky-100 dark:border-fem-borderDark flex items-center justify-between">
+                                <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                                    <i class="fas fa-layer-group text-fem-500 text-xs"></i>
+                                    <span>Média Prioridade • Rotina Diária</span>
+                                </h3>
+                            </div>
+                            <div class="p-5">
+                                <div id="dash-tasks-medium" class="space-y-3"></div>
+                                <div id="dash-medium-empty" class="text-xs text-slate-400 italic text-center py-6">
+                                    Nenhuma tarefa média pendente.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Baixa Prioridade (Acordeão) -->
+                        <div class="bg-white dark:bg-fem-cardDark rounded-3xl border border-sky-100 dark:border-fem-borderDark shadow-card-light overflow-hidden">
+                            <button onclick="app.toggleLowPriority()" class="w-full px-6 py-4 flex justify-between items-center text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-sky-50/40 dark:hover:bg-fem-borderDark/30 transition-colors">
+                                <span class="flex items-center gap-2">
+                                    <i class="fas fa-feather-alt text-accent-indigo text-xs"></i>
+                                    <span>Tarefas Complementares (Baixa Prioridade)</span>
+                                </span>
+                                <i id="dash-low-icon" class="fas fa-chevron-down text-slate-400 transition-transform duration-200"></i>
+                            </button>
+                            <div id="dash-tasks-low-container" class="hidden p-5 border-t border-sky-100 dark:border-fem-borderDark bg-sky-50/20 dark:bg-fem-navy/40">
+                                <div id="dash-tasks-low" class="space-y-3"></div>
+                                <div id="dash-low-empty" class="text-xs text-slate-400 italic text-center py-4">
+                                    Sem tarefas de baixa prioridade.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Coluna Lateral de Post-its / Anotações Rápidas -->
+                    <div class="space-y-5">
+                        <div class="bg-white dark:bg-fem-cardDark rounded-3xl border border-sky-100 dark:border-fem-borderDark shadow-card-light p-6 sticky top-6">
+                            <div class="flex items-center justify-between border-b border-sky-100 dark:border-fem-borderDark pb-3 mb-4">
+                                <h3 class="text-sm font-extrabold text-slate-800 dark:text-white flex items-center gap-2">
+                                    <i class="fas fa-sticky-note text-amber-400"></i>
+                                    <span>Lembretes Rápidos</span>
+                                </h3>
+                                <button onclick="app.clearTempNotes()" class="text-[11px] font-bold text-slate-400 hover:text-pink-500 transition-colors" title="Descartar notas temporárias">
+                                    <i class="fas fa-broom mr-1"></i> Limpar Temp.
+                                </button>
+                            </div>
+
+                            <!-- Formulário de Anotação -->
+                            <form id="form-note" onsubmit="app.addNote(event)" class="mb-5 bg-sky-50/50 dark:bg-fem-navy/60 p-4 rounded-2xl border border-sky-100 dark:border-fem-borderDark space-y-3">
+                                <input type="text" id="note-title" placeholder="Título do lembrete..." required class="w-full text-xs font-semibold rounded-xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-cardDark dark:text-white px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-fem-400">
+                                <textarea id="note-text" placeholder="Escreva aqui sua nota rápida..." required rows="2" class="w-full text-xs rounded-xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-cardDark dark:text-white px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-fem-400 resize-none"></textarea>
+                                
+                                <div class="flex items-center justify-between pt-1">
+                                    <label class="flex items-center text-xs font-medium text-slate-600 dark:text-slate-300 cursor-pointer">
+                                        <input type="checkbox" id="note-fixed" class="rounded border-sky-300 text-fem-500 focus:ring-fem-400 mr-2 h-3.5 w-3.5">
+                                        <span>Fixar permanente</span>
+                                    </label>
+                                    <button type="submit" class="bg-gradient-to-r from-fem-500 to-sky-600 hover:from-fem-600 hover:to-sky-700 text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow-sm transition-all">
+                                        Adicionar
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- Lista de Notas Ativas -->
+                            <div id="notes-list" class="space-y-3 max-h-[380px] overflow-y-auto pr-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- ABA 2: CRONOGRAMA (DIA • MÊS • ANO) - NOVO!     -->
+            <!-- ============================================== -->
+            <div id="tab-timeline" class="tab-content space-y-6">
+                <!-- Seletor de Visão: DIA, MÊS, ANO -->
+                <div class="bg-white dark:bg-fem-cardDark rounded-3xl p-4 border border-sky-100 dark:border-fem-borderDark shadow-card-light flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center bg-sky-50 dark:bg-fem-navy p-1.5 rounded-2xl border border-sky-200/80 dark:border-fem-borderDark w-full md:w-auto">
+                        <button onclick="app.setTimelineView('day')" id="timeline-btn-day" class="timeline-tab-btn flex-1 md:flex-initial px-5 py-2 rounded-xl text-xs font-extrabold transition-all duration-200 bg-white dark:bg-fem-cardDark text-fem-600 dark:text-sky-300 shadow-sm">
+                            <i class="fas fa-calendar-day mr-1.5"></i> Visão Dia
+                        </button>
+                        <button onclick="app.setTimelineView('month')" id="timeline-btn-month" class="timeline-tab-btn flex-1 md:flex-initial px-5 py-2 rounded-xl text-xs font-extrabold transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-fem-600">
+                            <i class="fas fa-calendar-alt mr-1.5"></i> Visão Mês
+                        </button>
+                        <button onclick="app.setTimelineView('year')" id="timeline-btn-year" class="timeline-tab-btn flex-1 md:flex-initial px-5 py-2 rounded-xl text-xs font-extrabold transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-fem-600">
+                            <i class="fas fa-calendar-star mr-1.5"></i> Visão Ano
+                        </button>
+                    </div>
+
+                    <!-- Filtro Temporal Rápido -->
+                    <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                        <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Filtrar por:</span>
+                        <select id="timeline-status-filter" onchange="app.renderTimeline()" class="text-xs font-bold rounded-xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-cardDark text-slate-700 dark:text-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fem-400">
+                            <option value="all">Todas as Atividades</option>
+                            <option value="pending">Apenas Pendentes</option>
+                            <option value="done">Apenas Concluídas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 1. SUB-VISÃO: DIA -->
+                <div id="timeline-view-day" class="space-y-6">
+                    <!-- Navegador do Dia -->
+                    <div class="bg-gradient-to-r from-sky-50 via-white to-pink-50/40 dark:from-fem-cardDark dark:via-fem-cardDark dark:to-fem-cardDark rounded-3xl p-6 border border-sky-100 dark:border-fem-borderDark shadow-card-light flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <button onclick="app.timelinePrevDay()" class="w-10 h-10 rounded-2xl bg-white dark:bg-fem-navy border border-sky-200 dark:border-fem-borderDark flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-sky-50 transition-colors shadow-sm">
+                                <i class="fas fa-chevron-left text-xs"></i>
+                            </button>
+                            <div class="flex flex-col">
+                                <h3 id="timeline-day-display" class="text-lg font-extrabold text-slate-800 dark:text-white capitalize">
+                                    --
+                                </h3>
+                                <div id="timeline-day-badge" class="text-[11px] font-bold text-fem-600 dark:text-sky-300">
+                                    --
+                                </div>
+                            </div>
+                            <button onclick="app.timelineNextDay()" class="w-10 h-10 rounded-2xl bg-white dark:bg-fem-navy border border-sky-200 dark:border-fem-borderDark flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-sky-50 transition-colors shadow-sm">
+                                <i class="fas fa-chevron-right text-xs"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <input type="date" id="timeline-day-picker" onchange="app.onTimelineDatePickerChange(this.value)" class="text-xs font-bold rounded-xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-cardDark text-slate-700 dark:text-slate-200 px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-fem-400">
+                            <button onclick="app.timelineGoToday()" class="px-4 py-2 bg-fem-500 hover:bg-fem-600 text-white text-xs font-extrabold rounded-xl shadow-sm transition-colors">
+                                Ir para Hoje
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Métricas do Dia Selecionado -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="bg-white dark:bg-fem-cardDark p-4 rounded-2xl border border-sky-100 dark:border-fem-borderDark flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Total Programado</span>
+                            <span id="timeline-day-total" class="text-lg font-black text-slate-800 dark:text-white">0</span>
+                        </div>
+                        <div class="bg-white dark:bg-fem-cardDark p-4 rounded-2xl border border-emerald-100 dark:border-fem-borderDark flex items-center justify-between">
+                            <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Concluídas</span>
+                            <span id="timeline-day-done" class="text-lg font-black text-emerald-600 dark:text-emerald-400">0</span>
+                        </div>
+                        <div class="bg-white dark:bg-fem-cardDark p-4 rounded-2xl border border-pink-100 dark:border-fem-borderDark flex items-center justify-between">
+                            <span class="text-xs font-bold text-pink-600 dark:text-pink-400">Pendentes</span>
+                            <span id="timeline-day-pending" class="text-lg font-black text-pink-600 dark:text-pink-400">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Lista de Tarefas do Dia (Passadas e Futuras) -->
+                    <div class="bg-white dark:bg-fem-cardDark rounded-3xl border border-sky-100 dark:border-fem-borderDark p-6 shadow-card-light">
+                        <div class="flex items-center justify-between border-b border-sky-100 dark:border-fem-borderDark pb-4 mb-4">
+                            <h4 class="text-sm font-extrabold text-slate-800 dark:text-white flex items-center gap-2">
+                                <i class="fas fa-list-check text-fem-500"></i>
+                                <span>Atividades do Dia Selecionado</span>
+                            </h4>
+                            <button onclick="app.quickAddForCurrentDay()" class="text-xs font-bold text-fem-600 dark:text-sky-300 hover:underline flex items-center gap-1">
+                                <i class="fas fa-plus"></i> Adicionar atividade neste dia
+                            </button>
+                        </div>
+                        <div id="timeline-day-tasks" class="space-y-3"></div>
+                        <div id="timeline-day-empty" class="text-center py-10 text-xs text-slate-400 italic">
+                            Nenhuma atividade cadastrada para este dia.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. SUB-VISÃO: MÊS -->
+                <div id="timeline-view-month" class="hidden space-y-6">
+                    <!-- Navegador do Mês -->
+                    <div class="bg-white dark:bg-fem-cardDark rounded-3xl p-6 border border-sky-100 dark:border-fem-borderDark shadow-card-light flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <button onclick="app.timelinePrevMonth()" class="w-10 h-10 rounded-2xl bg-sky-50 dark:bg-fem-navy border border-sky-200 dark:border-fem-borderDark flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-sky-100 transition-colors shadow-sm">
+                                <i class="fas fa-chevron-left text-xs"></i>
+                            </button>
+                            <h3 id="timeline-month-display" class="text-lg font-black text-slate-800 dark:text-white capitalize">
+                                --
+                            </h3>
+                            <button onclick="app.timelineNextMonth()" class="w-10 h-10 rounded-2xl bg-sky-50 dark:bg-fem-navy border border-sky-200 dark:border-fem-borderDark flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-sky-100 transition-colors shadow-sm">
+                                <i class="fas fa-chevron-right text-xs"></i>
+                            </button>
+                        </div>
+
+                        <!-- Resumo Rápido do Mês -->
+                        <div class="flex items-center gap-3">
+                            <span id="timeline-month-stat-badge" class="text-xs font-extrabold bg-sky-100 dark:bg-sky-950/70 text-fem-700 dark:text-sky-300 px-3 py-1.5 rounded-xl border border-sky-200 dark:border-sky-800">
+                                0 tarefas no mês
+                            </span>
+                            <button onclick="app.timelineGoCurrentMonth()" class="px-4 py-2 bg-fem-500 hover:bg-fem-600 text-white text-xs font-extrabold rounded-xl shadow-sm transition-colors">
+                                Mês Vigente
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Calendário Mensal Interativo em Grade -->
+                    <div class="bg-white dark:bg-fem-cardDark rounded-3xl p-6 border border-sky-100 dark:border-fem-borderDark shadow-card-light overflow-hidden">
+                        <!-- Dias da Semana -->
+                        <div class="grid grid-cols-7 gap-2 text-center text-xs font-extrabold text-slate-400 dark:text-slate-500 pb-3 mb-2 border-b border-sky-100 dark:border-fem-borderDark">
+                            <span>DOM</span><span>SEG</span><span>TER</span><span>QUA</span><span>QUI</span><span>SEX</span><span>SÁB</span>
+                        </div>
+                        <!-- Células dos Dias -->
+                        <div id="timeline-calendar-grid" class="grid grid-cols-7 gap-2"></div>
+                    </div>
+
+                    <!-- Lista de Tarefas do Mês Divididas: Passadas vs Futuras -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Atividades Passadas no Mês -->
+                        <div class="bg-white dark:bg-fem-cardDark rounded-3xl p-6 border border-sky-100 dark:border-fem-borderDark shadow-card-light">
+                            <h4 class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                <i class="fas fa-history text-slate-400"></i>
+                                <span>Histórico do Mês (Dias Anteriores)</span>
+                            </h4>
+                            <div id="timeline-month-past" class="space-y-2.5 max-h-[380px] overflow-y-auto pr-1"></div>
+                            <div id="timeline-month-past-empty" class="text-xs text-slate-400 italic text-center py-6">Nenhuma atividade passada registrada neste mês.</div>
+                        </div>
+
+                        <!-- Atividades Futuras no Mês -->
+                        <div class="bg-white dark:bg-fem-cardDark rounded-3xl p-6 border border-sky-100 dark:border-fem-borderDark shadow-card-light">
+                            <h4 class="text-xs font-extrabold text-fem-600 dark:text-sky-300 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                <i class="fas fa-calendar-arrow-down text-fem-500"></i>
+                                <span>Planejamento Futuro (Próximos Dias do Mês)</span>
+                            </h4>
+                            <div id="timeline-month-future" class="space-y-2.5 max-h-[380px] overflow-y-auto pr-1"></div>
+                            <div id="timeline-month-future-empty" class="text-xs text-slate-400 italic text-center py-6">Nenhuma atividade futura agendada neste mês.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. SUB-VISÃO: ANO -->
+                <div id="timeline-view-year" class="hidden space-y-6">
+                    <!-- Navegador do Ano -->
+                    <div class="bg-white dark:bg-fem-cardDark rounded-3xl p-6 border border-sky-100 dark:border-fem-borderDark shadow-card-light flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <button onclick="app.timelinePrevYear()" class="w-10 h-10 rounded-2xl bg-sky-50 dark:bg-fem-navy border border-sky-200 dark:border-fem-borderDark flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-sky-100 transition-colors shadow-sm">
+                                <i class="fas fa-chevron-left text-xs"></i>
+                            </button>
+                            <h3 id="timeline-year-display" class="text-2xl font-black text-slate-800 dark:text-white">
+                                --
+                            </h3>
+                            <button onclick="app.timelineNextYear()" class="w-10 h-10 rounded-2xl bg-sky-50 dark:bg-fem-navy border border-sky-200 dark:border-fem-borderDark flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-sky-100 transition-colors shadow-sm">
+                                <i class="fas fa-chevron-right text-xs"></i>
+                            </button>
+                        </div>
+
+                        <!-- Indicador Anual -->
+                        <div class="flex items-center gap-3">
+                            <div class="text-xs font-bold text-slate-500 dark:text-slate-400" id="timeline-year-summary">
+                                0 atividades no ano
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grid dos 12 Meses do Ano -->
+                    <div id="timeline-year-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        <!-- Gerado dinamicamente com os 12 meses -->
+                    </div>
+
+                    <!-- Marcos Corporativos Anuais (Timeline Estratégica) -->
+                    <div class="bg-white dark:bg-fem-cardDark rounded-3xl p-6 border border-sky-100 dark:border-fem-borderDark shadow-card-light">
+                        <h4 class="text-sm font-extrabold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-flag-checkered text-accent-pink"></i>
+                            <span>Marcos & Fechamentos Estratégicos do Ano</span>
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div class="p-4 rounded-2xl bg-sky-50/50 dark:bg-fem-navy/60 border border-sky-100 dark:border-fem-borderDark">
+                                <span class="text-[10px] font-black uppercase text-fem-600 dark:text-sky-300">1º Trimestre (Q1)</span>
+                                <div class="text-xs font-bold text-slate-800 dark:text-white mt-1">Fechamento Anual & Balanço</div>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Auditoria externa e apurações IRPJ/CSLL do exercício anterior.</p>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-sky-50/50 dark:bg-fem-navy/60 border border-sky-100 dark:border-fem-borderDark">
+                                <span class="text-[10px] font-black uppercase text-fem-600 dark:text-sky-300">2º Trimestre (Q2)</span>
+                                <div class="text-xs font-bold text-slate-800 dark:text-white mt-1">Obrigações ECD & ECF</div>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Transmissão contábil e revisão de conciliações patrimoniais.</p>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-sky-50/50 dark:bg-fem-navy/60 border border-sky-100 dark:border-fem-borderDark">
+                                <span class="text-[10px] font-black uppercase text-fem-600 dark:text-sky-300">3º Trimestre (Q3)</span>
+                                <div class="text-xs font-bold text-slate-800 dark:text-white mt-1">Planejamento & Budget</div>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Previsão orçamentária do próximo ciclo e alinhamento de custos.</p>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-sky-50/50 dark:bg-fem-navy/60 border border-sky-100 dark:border-fem-borderDark">
+                                <span class="text-[10px] font-black uppercase text-fem-600 dark:text-sky-300">4º Trimestre (Q4)</span>
+                                <div class="text-xs font-bold text-slate-800 dark:text-white mt-1">Fechamento Fiscal & Provisões</div>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Provisões de 13º salário, inventário fiscal e encerramento contábil.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- ABA: ATIVIDADES DIÁRIAS CONSTANTES (ROTINA)   -->
+            <!-- ============================================== -->
+            <div id="tab-daily-routine" class="tab-content space-y-6">
+                <!-- Banner de Boas-Vindas & Métricas do Dia -->
+                <div class="bg-gradient-to-r from-sky-50 via-white to-pastel-blush/40 dark:from-fem-cardDark dark:via-fem-cardDark dark:to-fem-navy rounded-3xl p-6 md:p-8 border border-sky-100 dark:border-fem-borderDark shadow-card-light relative overflow-hidden">
+                    <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
+                        <div class="space-y-1.5 max-w-xl">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100/80 dark:bg-sky-900/50 text-fem-700 dark:text-sky-300 text-xs font-black">
+                                <i class="fas fa-repeat text-fem-500"></i>
+                                <span>Demandas Fixas & Recorrentes</span>
+                            </div>
+                            <h3 class="text-xl md:text-2xl font-black text-slate-800 dark:text-white">
+                                Atividades Diárias Constantes
+                            </h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+                                Suas rotinas operacionais e checagens que se repetem todo dia. Você tem liberdade total para adicionar novas atividades ou retirar demandas quando sua rotina mudar.
+                            </p>
+                        </div>
+
+                        <!-- Card de Indicadores de Execução -->
+                        <div class="bg-white/90 dark:bg-fem-navy/80 p-5 rounded-2xl border border-sky-100 dark:border-fem-borderDark shadow-sm flex flex-col sm:flex-row items-center gap-6 w-full lg:w-auto justify-between">
+                            <div class="text-center sm:text-left">
+                                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Concluídas Hoje</div>
+                                <div class="text-2xl font-black text-slate-800 dark:text-white mt-0.5">
+                                    <span id="daily-stat-done" class="text-emerald-600 dark:text-emerald-400">0</span>
+                                    <span class="text-slate-300 dark:text-slate-600 text-lg">/</span>
+                                    <span id="daily-stat-total" class="text-slate-600 dark:text-slate-300">0</span>
+                                </div>
+                                <div class="text-[11px] font-bold text-fem-600 dark:text-sky-300 mt-1" id="daily-stat-pct">0% concluído</div>
+                            </div>
+                            <div class="w-full sm:w-36">
+                                <div class="w-full bg-sky-100 dark:bg-fem-cardDark rounded-full h-3 p-0.5 mb-2">
+                                    <div id="daily-stat-progress-bar" class="bg-gradient-to-r from-sky-400 via-fem-500 to-accent-teal h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                                <button onclick="app.resetDailyRoutinesToday()" class="w-full text-center text-[11px] font-extrabold text-slate-500 hover:text-pink-600 dark:text-slate-400 dark:hover:text-pink-400 transition-colors py-1 px-2 rounded-lg bg-sky-50 dark:bg-fem-cardDark border border-sky-100 dark:border-fem-borderDark" title="Limpar as marcações feitas hoje para recomeçar o dia">
+                                    <i class="fas fa-rotate-left mr-1 text-[10px]"></i> Reiniciar Hoje
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulário de Cadastro e Edição de Atividade Constante -->
+                <div class="bg-white dark:bg-fem-cardDark rounded-3xl border border-sky-100 dark:border-fem-borderDark shadow-card-light overflow-hidden">
+                    <div class="bg-sky-50/70 dark:bg-fem-navy/70 px-6 py-4 border-b border-sky-100 dark:border-fem-borderDark flex items-center justify-between">
+                        <h3 class="text-sm font-extrabold text-slate-800 dark:text-white flex items-center gap-2" id="daily-form-title">
+                            <i class="fas fa-plus-circle text-fem-500"></i>
+                            <span>Cadastrar Nova Atividade Constante</span>
+                        </h3>
+                        <span class="text-[11px] font-bold text-slate-400">Repete todos os dias</span>
+                    </div>
+
+                    <form id="form-daily-routine" onsubmit="app.saveDailyRoutine(event)" class="p-6">
+                        <input type="hidden" id="daily-id">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <!-- Nome / Título da Demanda -->
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">
+                                    Nome da Atividade / Demanda Diária *
+                                </label>
+                                <input type="text" id="daily-title" required placeholder="Ex: Conferir conciliação bancária matinal..." class="w-full text-xs font-semibold rounded-2xl border border-sky-200 dark:border-fem-borderDark bg-sky-50/30 dark:bg-fem-navy dark:text-white px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-fem-400">
+                            </div>
+
+                            <!-- Período Recomendado -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">
+                                    Período do Dia *
+                                </label>
+                                <select id="daily-period" class="w-full text-xs font-bold rounded-2xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-navy dark:text-white px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-fem-400">
+                                    <option value="Manhã">🌅 Manhã (Abertura)</option>
+                                    <option value="Tarde">☀️ Tarde (Intermediário)</option>
+                                    <option value="Final do Dia">🌙 Final do Dia (Fechamento)</option>
+                                    <option value="Qualquer Horário">⚡ Qualquer Horário (Livre)</option>
+                                </select>
+                            </div>
+
+                            <!-- Categoria -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">
+                                    Categoria Operacional
+                                </label>
+                                <select id="daily-category" class="w-full text-xs font-bold rounded-2xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-navy dark:text-white px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-fem-400">
+                                    <option value="Tesouraria">Tesouraria</option>
+                                    <option value="Contas a Pagar">Contas a Pagar</option>
+                                    <option value="Contas a Receber">Contas a Receber</option>
+                                    <option value="Conciliação Bancária">Conciliação Bancária</option>
+                                    <option value="Fechamento">Fechamento & Caixa</option>
+                                    <option value="Operacional">Operacional / Relatórios</option>
+                                    <option value="Auditoria / Fiscal">Auditoria / Fiscal</option>
+                                    <option value="Pessoal / Rotina">Pessoal / Rotina</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+
+                            <!-- Horário / Lembrete Opcional -->
+                            <div class="md:col-span-3">
+                                <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">
+                                    Horário de Referência ou Observação (Opcional)
+                                </label>
+                                <input type="text" id="daily-note" placeholder="Ex: Até às 10:00 • Conferir banco Itaú e Bradesco • Antes de emitir relatórios..." class="w-full text-xs font-semibold rounded-2xl border border-sky-200 dark:border-fem-borderDark bg-sky-50/30 dark:bg-fem-navy dark:text-white px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-fem-400">
+                            </div>
+
+                            <!-- Botões de Ação do Form -->
+                            <div class="flex items-end gap-2 md:col-span-1">
+                                <button type="submit" id="daily-form-submit-btn" class="w-full bg-gradient-to-r from-fem-500 to-sky-600 hover:from-fem-600 hover:to-sky-700 text-white text-xs font-extrabold py-2.5 px-4 rounded-2xl shadow-sm transition-all flex items-center justify-center gap-1.5">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Adicionar Atividade</span>
+                                </button>
+                                <button type="button" id="daily-form-cancel-btn" onclick="app.cancelEditDailyRoutine()" class="hidden px-3 py-2.5 rounded-2xl border border-slate-200 dark:border-fem-borderDark text-xs font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 transition-colors">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Barra de Filtros e Busca de Demandas Diárias -->
+                <div class="bg-white dark:bg-fem-cardDark rounded-3xl p-4 border border-sky-100 dark:border-fem-borderDark shadow-card-light flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
+                        <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wider pl-1 pr-2 flex-shrink-0">Período:</span>
+                        <button onclick="app.setDailyPeriodFilter('all')" id="daily-filter-all" class="daily-period-pill px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-sky-100 text-fem-700 dark:bg-sky-900/60 dark:text-sky-300 transition-all flex-shrink-0">
+                            Todos
+                        </button>
+                        <button onclick="app.setDailyPeriodFilter('Manhã')" id="daily-filter-manha" class="daily-period-pill px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-500 hover:bg-sky-50 dark:hover:bg-fem-navy dark:text-slate-400 transition-all flex-shrink-0">
+                            🌅 Manhã
+                        </button>
+                        <button onclick="app.setDailyPeriodFilter('Tarde')" id="daily-filter-tarde" class="daily-period-pill px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-500 hover:bg-sky-50 dark:hover:bg-fem-navy dark:text-slate-400 transition-all flex-shrink-0">
+                            ☀️ Tarde
+                        </button>
+                        <button onclick="app.setDailyPeriodFilter('Final do Dia')" id="daily-filter-final" class="daily-period-pill px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-500 hover:bg-sky-50 dark:hover:bg-fem-navy dark:text-slate-400 transition-all flex-shrink-0">
+                            🌙 Final do Dia
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                        <div class="relative flex-1 md:w-60">
+                            <input type="text" id="daily-search" oninput="app.onDailySearchInput(this.value)" placeholder="Filtrar demanda..." class="w-full pl-8 pr-3 py-1.5 rounded-xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-cardDark text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-fem-400">
+                            <i class="fas fa-search absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+                        </div>
+                        <select id="daily-status-filter" onchange="app.setDailyStatusFilter(this.value)" class="text-xs font-bold rounded-xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-cardDark text-slate-700 dark:text-slate-200 px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-fem-400 flex-shrink-0">
+                            <option value="all">Todas</option>
+                            <option value="pending">Pendentes Hoje</option>
+                            <option value="done">Concluídas Hoje</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Lista de Atividades Diárias Constantes -->
+                <div class="space-y-3">
+                    <div id="daily-routine-list" class="space-y-3"></div>
+
+                    <!-- Estado Vazio / Sem Atividades -->
+                    <div id="daily-routine-empty" class="bg-white dark:bg-fem-cardDark rounded-3xl p-10 border border-dashed border-sky-200 dark:border-fem-borderDark text-center space-y-3 shadow-card-light hidden">
+                        <div class="w-14 h-14 mx-auto rounded-2xl bg-sky-50 dark:bg-fem-navy text-fem-500 flex items-center justify-center text-2xl">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h4 class="text-sm font-extrabold text-slate-800 dark:text-white">
+                            Nenhuma atividade diária encontrada
+                        </h4>
+                        <p class="text-xs text-slate-400 max-w-md mx-auto">
+                            Cadastre suas demandas diárias no formulário acima ou restaure os modelos corporativos recomendados.
+                        </p>
+                        <button onclick="app.restoreDefaultDailyRoutines()" class="mt-2 text-xs font-bold text-fem-600 dark:text-sky-300 hover:underline px-4 py-2 rounded-xl bg-sky-50 dark:bg-fem-navy inline-flex items-center gap-1.5">
+                            <i class="fas fa-magic"></i>
+                            <span>Restaurar Demandas Padrão de Exemplo</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- ABA 3: GERENCIADOR DINÂMICO DE TAREFAS         -->
+            <!-- ============================================== -->
+            <div id="tab-tasks" class="tab-content space-y-6">
+                <!-- Formulário de Cadastro / Edição -->
+                <div class="bg-white dark:bg-fem-cardDark rounded-3xl border border-sky-100 dark:border-fem-borderDark shadow-card-light overflow-hidden">
+                    <div class="bg-sky-50/60 dark:bg-fem-navy/70 px-6 py-4 border-b border-sky-100 dark:border-fem-borderDark">
+                        <h3 class="text-sm font-extrabold text-slate-800 dark:text-white flex items-center gap-2" id="task-form-title">
+                            <i class="fas fa-plus-circle text-fem-500"></i>
+                            <span>Cadastrar Nova Tarefa Financeira</span>
+                        </h3>
+                    </div>
+                    <form id="form-task" onsubmit="app.saveTask(event)" class="p-6">
+                        <input type="hidden" id="task-id">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                            <div class="md:col-span-2 space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Título da Atividade *</label>
+                                    <input type="text" id="task-title" required placeholder="Ex: Conciliar extratos Itaú e Bradesco" class="w-full rounded-2xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-navy/60 dark:text-white px-3.5 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-fem-400">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Descrição e Observações</label>
+                                    <textarea id="task-desc" rows="3" placeholder="Detalhes de valores, notas fiscais ou pendências..." class="w-full rounded-2xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-navy/60 dark:text-white px-3.5 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-fem-400 resize-none"></textarea>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Categoria Financeira</label>
+                                    <select id="task-category" class="w-full rounded-2xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-navy/60 dark:text-white px-3.5 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-fem-400">
+                                        <option value="Contas a Pagar">Contas a Pagar</option>
+                                        <option value="Contas a Receber">Contas a Receber</option>
+                                        <option value="Conciliação Bancária">Conciliação Bancária</option>
+                                        <option value="Fechamento Mensal">Fechamento Mensal</option>
+                                        <option value="Tesouraria / Fluxo de Caixa">Tesouraria / Fluxo</option>
+                                        <option value="Auditoria / Fiscal">Auditoria / Fiscal</option>
+                                        <option value="Outros">Outros</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nível de Prioridade</label>
+                                    <select id="task-prio" class="w-full rounded-2xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-navy/60 dark:text-white px-3.5 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-fem-400">
+                                        <option value="alta">Alta (Crítico / Alerta)</option>
+                                        <option value="media" selected>Média (Normal)</option>
+                                        <option value="baixa">Baixa (Complementar)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Data de Execução/Vencimento *</label>
+                                    <input type="date" id="task-date" required class="w-full rounded-2xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-navy/60 dark:text-white px-3.5 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-fem-400">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between mt-6 pt-4 border-t border-sky-100 dark:border-fem-borderDark">
+                            <label class="flex items-center text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
+                                <input type="checkbox" id="task-show-dash" checked class="rounded border-sky-300 text-fem-500 focus:ring-fem-400 mr-2 h-4 w-4">
+                                Exibir no Dashboard Principal
+                            </label>
+                            <div class="flex space-x-2">
+                                <button type="button" onclick="app.resetTaskForm()" class="px-4 py-2 border border-sky-200 dark:border-fem-borderDark rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-fem-navy transition-colors">
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="px-6 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-fem-500 to-sky-600 hover:from-fem-600 hover:to-sky-700 shadow-sm transition-all">
+                                    Salvar Atividade
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Filtros e Tabela de Consulta Geral -->
+                <div class="bg-white dark:bg-fem-cardDark rounded-3xl border border-sky-100 dark:border-fem-borderDark shadow-card-light overflow-hidden">
+                    <div class="p-5 border-b border-sky-100 dark:border-fem-borderDark flex flex-col md:flex-row md:items-center justify-between gap-4 bg-sky-50/40 dark:bg-fem-navy/50">
+                        <div class="relative flex-1 max-w-md">
+                            <input type="text" id="filter-search" oninput="app.renderTasksList()" placeholder="Buscar por título ou descrição..." class="w-full pl-9 pr-4 py-2 rounded-2xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-cardDark text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-fem-400">
+                            <i class="fas fa-search absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                        </div>
+                        <div class="flex space-x-2">
+                            <select id="filter-status" onchange="app.renderTasksList()" class="rounded-2xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-cardDark text-xs font-bold px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fem-400">
+                                <option value="all">Todos os Status</option>
+                                <option value="pending" selected>Pendentes</option>
+                                <option value="done">Concluídas</option>
+                            </select>
+                            <select id="filter-cat" onchange="app.renderTasksList()" class="rounded-2xl border border-sky-200 dark:border-fem-borderDark bg-white dark:bg-fem-cardDark text-xs font-bold px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fem-400">
+                                <option value="all">Todas as Categorias</option>
+                                <option value="Contas a Pagar">Contas a Pagar</option>
+                                <option value="Contas a Receber">Contas a Receber</option>
+                                <option value="Conciliação Bancária">Conciliação Bancária</option>
+                                <option value="Fechamento Mensal">Fechamento Mensal</option>
+                                <option value="Tesouraria / Fluxo de Caixa">Tesouraria / Fluxo</option>
+                                <option value="Auditoria / Fiscal">Auditoria / Fiscal</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-sky-100 dark:divide-fem-borderDark">
+                            <thead class="bg-sky-50/60 dark:bg-fem-navy">
+                                <tr>
+                                    <th class="px-6 py-3.5 text-left text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider w-16">Status</th>
+                                    <th class="px-6 py-3.5 text-left text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tarefa</th>
+                                    <th class="px-6 py-3.5 text-left text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Categoria</th>
+                                    <th class="px-6 py-3.5 text-left text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Vencimento</th>
+                                    <th class="px-6 py-3.5 text-right text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tasks-table-body" class="bg-white dark:bg-fem-cardDark divide-y divide-sky-100 dark:divide-fem-borderDark text-xs"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- ABA 4: CHECKLIST DO DIA                        -->
+            <!-- ============================================== -->
+            <div id="tab-checklist" class="tab-content space-y-6 max-w-4xl mx-auto">
+                <div class="bg-white dark:bg-fem-cardDark rounded-3xl shadow-card-light border border-sky-100 dark:border-fem-borderDark overflow-hidden">
+                    <div class="p-8 border-b border-sky-100 dark:border-fem-borderDark bg-gradient-to-b from-sky-50/70 to-transparent dark:from-fem-navy/50 text-center relative overflow-hidden">
+                        <h3 class="text-2xl font-black text-slate-800 dark:text-white mb-1">
+                            Foco do Dia
+                        </h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                            Itens com vencimento hoje ou pendências de dias anteriores que exigem ação.
+                        </p>
+                        
+                        <!-- Barra de Progresso Suave -->
+                        <div class="mt-6 max-w-md mx-auto">
+                            <div class="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+                                <span class="uppercase tracking-wider">Progresso de Hoje</span>
+                                <span id="checklist-progress-text" class="text-fem-600 dark:text-sky-300">0 de 0</span>
+                            </div>
+                            <div class="w-full bg-sky-100 dark:bg-fem-navy rounded-full h-3 p-0.5">
+                                <div id="checklist-progress-bar" class="bg-gradient-to-r from-sky-400 via-fem-500 to-accent-pink h-2 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-sky-100 dark:divide-fem-borderDark">
+                        <div class="p-6">
+                            <h4 class="text-xs font-extrabold text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <i class="fas fa-hourglass-half text-amber-400"></i>
+                                <span>Pendentes para Hoje</span>
+                            </h4>
+                            <div id="checklist-pending" class="space-y-3"></div>
+                            <div id="checklist-pending-empty" class="text-xs text-slate-400 italic text-center py-8 bg-sky-50/30 dark:bg-fem-navy/30 rounded-2xl border border-dashed border-sky-200 dark:border-fem-borderDark hidden">
+                                Parabéns! Nenhuma pendência em aberto. 🎉
+                            </div>
+                        </div>
+
+                        <div class="p-6 bg-sky-50/20 dark:bg-fem-navy/20">
+                            <h4 class="text-xs font-extrabold text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <i class="fas fa-check-double text-emerald-500"></i>
+                                <span>Concluídas Hoje</span>
+                            </h4>
+                            <div id="checklist-done" class="space-y-3 opacity-80 hover:opacity-100 transition-opacity"></div>
+                            <div id="checklist-done-empty" class="text-xs text-slate-400 italic text-center py-8 hidden">
+                                Nenhuma tarefa finalizada hoje ainda.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seção Integrada: Atividades Constantes do Dia (Rotina) -->
+                    <div class="p-6 border-t border-sky-100 dark:border-fem-borderDark bg-gradient-to-r from-sky-50/50 via-white to-pastel-baby/30 dark:from-fem-navy/50 dark:via-fem-cardDark dark:to-fem-navy/40">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-xs font-extrabold text-fem-600 dark:text-sky-300 uppercase tracking-widest flex items-center gap-2">
+                                <i class="fas fa-repeat text-fem-500"></i>
+                                <span>Rotina Fixa • Atividades Constantes do Dia</span>
+                            </h4>
+                            <span id="checklist-daily-stat" class="text-xs font-extrabold text-slate-500 dark:text-slate-400">
+                                0 de 0 concluídas
+                            </span>
+                        </div>
+                        <div id="checklist-daily-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+                        <div id="checklist-daily-empty" class="text-xs text-slate-400 italic text-center py-4 hidden">
+                            Nenhuma atividade diária cadastrada.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- ABA 5: HISTÓRICO & PERFORMANCE                 -->
+            <!-- ============================================== -->
+            <div id="tab-performance" class="tab-content space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Donut Chart -->
+                    <div class="bg-white dark:bg-fem-cardDark rounded-3xl border border-sky-100 dark:border-fem-borderDark p-6 shadow-card-light flex flex-col">
+                        <h3 class="text-sm font-extrabold text-slate-800 dark:text-white uppercase tracking-wider mb-4 border-b border-sky-100 dark:border-fem-borderDark pb-3 flex items-center gap-2">
+                            <i class="fas fa-chart-pie text-fem-500"></i>
+                            <span>Equilíbrio de Tarefas</span>
+                        </h3>
+                        <div class="flex-1 relative min-h-[260px] flex items-center justify-center">
+                            <canvas id="chart-status"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Diagnóstico de Gargalos (Avaliador de Atenção) -->
+                    <div class="bg-white dark:bg-fem-cardDark rounded-3xl border border-sky-100 dark:border-fem-borderDark p-6 shadow-card-light flex flex-col">
+                        <div class="border-b border-sky-100 dark:border-fem-borderDark pb-3 mb-4">
+                            <h3 class="text-sm font-extrabold text-pink-600 dark:text-pink-400 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fas fa-heart-crack text-accent-pink"></i>
+                                <span>Avaliador de Atenção & Gargalos</span>
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-1">Identifica tarefas sem resolução criadas há mais de 7 dias.</p>
+                        </div>
+                        
+                        <div class="flex-1 overflow-y-auto">
+                            <ul id="perf-neglected" class="space-y-3"></ul>
+                            <div id="perf-neglected-empty" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 py-10 text-center flex flex-col items-center gap-2 hidden">
+                                <i class="fas fa-shield-heart text-2xl text-emerald-400"></i>
+                                <span>Excelente! Nenhuma tarefa esquecida ou em gargalo crítico.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabela de Histórico de Conclusões -->
+                <div class="bg-white dark:bg-fem-cardDark rounded-3xl border border-sky-100 dark:border-fem-borderDark shadow-card-light overflow-hidden">
+                    <div class="p-5 border-b border-sky-100 dark:border-fem-borderDark bg-sky-50/30 dark:bg-fem-navy/40">
+                        <h3 class="text-sm font-extrabold text-slate-800 dark:text-white flex items-center gap-2">
+                            <i class="fas fa-clock-rotate-left text-fem-500"></i>
+                            <span>Últimas Conclusões Registradas</span>
+                        </h3>
+                    </div>
+                    <div class="overflow-x-auto max-h-[350px]">
+                        <table class="min-w-full divide-y divide-sky-100 dark:divide-fem-borderDark">
+                            <thead class="bg-sky-50/60 dark:bg-fem-navy sticky top-0 z-10">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase">Data e Hora</th>
+                                    <th class="px-6 py-3 text-left text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase">Tarefa</th>
+                                    <th class="px-6 py-3 text-left text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase">Categoria</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-table-body" class="bg-white dark:bg-fem-cardDark divide-y divide-sky-100 dark:divide-fem-borderDark text-xs"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- ABA 6: CALCULADORA FINANCEIRA                  -->
+            <!-- ============================================== -->
+            <div id="tab-calculator" class="tab-content space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                    
+                    <div class="space-y-6">
+                        <!-- Juros e Multa por Atraso -->
+                        <div class="bg-white dark:bg-fem-cardDark rounded-3xl border border-pink-100 dark:border-fem-borderDark p-6 shadow-card-light relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-1.5 h-full bg-accent-pink"></div>
+                            <h3 class="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                                <i class="fas fa-receipt text-accent-pink"></i>
+                                <span>Juros e Multa por Atraso de Título</span>
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3.5 mb-4">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">Valor Nominal (R$)</label>
+                                    <input type="number" id="calc-jm-valor" step="0.01" placeholder="1000.00" class="w-full text-xs font-bold rounded-xl border border-sky-200 dark:border-fem-borderDark bg-sky-50/40 dark:bg-fem-navy px-3 py-2.5 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-400">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">Dias de Atraso</label>
+                                    <input type="number" id="calc-jm-dias" placeholder="10" class="w-full text-xs font-bold rounded-xl border border-sky-200 dark:border-fem-borderDark bg-sky-50/40 dark:bg-fem-navy px-3 py-2.5 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-400">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">Multa (%)</label>
+                                    <input type="number" id="calc-jm-multa" step="0.01" value="2.00" class="w-full text-xs font-bold rounded-xl border border-sky-200 dark:border-fem-borderDark bg-sky-50/40 dark:bg-fem-navy px-3 py-2.5 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-400">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">Juros a.m. (%)</label>
+                                    <input type="number" id="calc-jm-juros" step="0.01" value="1.00" class="w-full text-xs font-bold rounded-xl border border-sky-200 dark:border-fem-borderDark bg-sky-50/40 dark:bg-fem-navy px-3 py-2.5 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-400">
+                                </div>
+                            </div>
+                            <button onclick="app.calcJurosMulta()" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-xs font-black py-2.5 rounded-xl shadow-sm transition-all">
+                                Calcular Valor Atualizado
+                            </button>
+                            <div id="res-jm" class="mt-4 p-4 bg-pink-50 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-900/50 rounded-2xl text-center text-lg font-black text-pink-700 dark:text-pink-300 hidden"></div>
+                        </div>
+
+                        <!-- Variação Percentual (MoM / YoY) -->
+                        <div class="bg-white dark:bg-fem-cardDark rounded-3xl border border-sky-100 dark:border-fem-borderDark p-6 shadow-card-light relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-1.5 h-full bg-fem-500"></div>
+                            <h3 class="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                                <i class="fas fa-chart-line-up text-fem-500"></i>
+                                <span>Variação Percentual (Comparativo MoM/YoY)</span>
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3.5 mb-4">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">Valor Anterior</label>
+                                    <input type="number" id="calc-var-ant" step="0.01" placeholder="5000.00" class="w-full text-xs font-bold rounded-xl border border-sky-200 dark:border-fem-borderDark bg-sky-50/40 dark:bg-fem-navy px-3 py-2.5 dark:text-white focus:outline-none focus:ring-2 focus:ring-fem-400">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">Valor Atual</label>
+                                    <input type="number" id="calc-var-atu" step="0.01" placeholder="5800.00" class="w-full text-xs font-bold rounded-xl border border-sky-200 dark:border-fem-borderDark bg-sky-50/40 dark:bg-fem-navy px-3 py-2.5 dark:text-white focus:outline-none focus:ring-2 focus:ring-fem-400">
+                                </div>
+                            </div>
+                            <button onclick="app.calcVariacao()" class="w-full bg-gradient-to-r from-fem-500 to-sky-600 hover:from-fem-600 hover:to-sky-700 text-white text-xs font-black py-2.5 rounded-xl shadow-sm transition-all">
+                                Calcular Diferença & %
+                            </button>
+                            <div id="res-var" class="mt-4 p-4 rounded-2xl text-center text-lg font-black hidden"></div>
+                        </div>
+
+                        <!-- Desconto Comercial / Valor Presente -->
+                        <div class="bg-white dark:bg-fem-cardDark rounded-3xl border border-emerald-100 dark:border-fem-borderDark p-6 shadow-card-light relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-500"></div>
+                            <h3 class="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                                <i class="fas fa-badge-percent text-emerald-500"></i>
+                                <span>Desconto Comercial Simples</span>
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3.5 mb-4">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">Valor Bruto (R$)</label>
+                                    <input type="number" id="calc-desc-vf" step="0.01" placeholder="10000.00" class="w-full text-xs font-bold rounded-xl border border-sky-200 dark:border-fem-borderDark bg-sky-50/40 dark:bg-fem-navy px-3 py-2.5 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">Desconto (%)</label>
+                                    <input type="number" id="calc-desc-taxa" step="0.01" placeholder="5.00" class="w-full text-xs font-bold rounded-xl border border-sky-200 dark:border-fem-borderDark bg-sky-50/40 dark:bg-fem-navy px-3 py-2.5 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400">
+                                </div>
+                            </div>
+                            <button onclick="app.calcDesconto()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-black py-2.5 rounded-xl shadow-sm transition-all">
+                                Apurar Valor Líquido
+                            </button>
+                            <div id="res-desc" class="mt-4 p-4 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 rounded-2xl text-center text-lg font-black text-emerald-700 dark:text-emerald-300 hidden"></div>
+                        </div>
+                    </div>
+
+                    <!-- Fita de Auditoria de Cálculos -->
+                    <div class="bg-white dark:bg-fem-cardDark rounded-3xl border border-sky-100 dark:border-fem-borderDark shadow-card-light flex flex-col h-full max-h-[850px]">
+                        <div class="flex justify-between items-center p-5 border-b border-sky-100 dark:border-fem-borderDark bg-sky-50/30 dark:bg-fem-navy/40">
+                            <h3 class="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                                <i class="fas fa-list-ol text-fem-500"></i>
+                                <span>Fita de Auditoria da Sessão</span>
+                            </h3>
+                            <button onclick="app.clearCalcHistory()" class="text-xs font-bold text-slate-400 hover:text-pink-500 transition-colors">
+                                <i class="fas fa-trash-alt mr-1"></i> Limpar
+                            </button>
+                        </div>
+                        <div class="flex-1 overflow-y-auto p-5 space-y-3">
+                            <ul id="calc-history-list" class="space-y-3"></ul>
+                            <div id="calc-history-empty" class="text-xs text-slate-400 italic text-center py-10">A fita de cálculos está vazia.</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- JavaScript Principal com Persistência LocalStorage & Módulo Temporal -->
+    <script>
+        const app = {
+            data: {
+                tasks: [],
+                notes: [],
+                calcHistory: [],
+                dailyRoutines: []
+            },
+            dailyFilter: {
+                period: 'all',
+                status: 'all',
+                search: ''
+            },
+            chartInstance: null,
+            currentTab: 'dashboard',
+            
+            // Controle de Navegação Temporal (Dia, Mês, Ano)
+            timeline: {
+                view: 'month', // 'day', 'month', 'year'
+                selectedDay: new Date().toISOString().split('T')[0],
+                selectedMonth: new Date().getMonth(), // 0-11
+                selectedYear: new Date().getFullYear(),
+                statusFilter: 'all'
+            },
+            
+            init() {
+                this.loadData();
+                this.setDateHeader();
+                this.checkTheme();
+                this.switchTab('dashboard');
+                
+                // Inicializa campo de data para hoje no form
+                const todayStr = new Date().toISOString().split('T')[0];
+                document.getElementById('task-date').value = todayStr;
+                document.getElementById('timeline-day-picker').value = todayStr;
+                this.refreshDailyRoutineViews();
+            },
+            
+            // --- Tema (Claro / Escuro) ---
+            checkTheme() {
+                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            },
+            
+            toggleTheme() {
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.theme = 'light';
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.theme = 'dark';
+                }
+                if (this.chartInstance) {
+                    this.updateChart();
+                }
+            },
+
+            // --- Controle da Barra Lateral Responsiva (Mobile Drawer) ---
+            toggleSidebar() {
+                const sb = document.getElementById('sidebar');
+                const bd = document.getElementById('sidebar-backdrop');
+                if(!sb) return;
+                if(sb.classList.contains('-translate-x-full')) {
+                    sb.classList.remove('-translate-x-full');
+                    if(bd) bd.classList.remove('hidden');
+                } else {
+                    sb.classList.add('-translate-x-full');
+                    if(bd) bd.classList.add('hidden');
+                }
+            },
+
+            closeSidebar() {
+                const sb = document.getElementById('sidebar');
+                const bd = document.getElementById('sidebar-backdrop');
+                if(sb) sb.classList.add('-translate-x-full');
+                if(bd) bd.classList.add('hidden');
+            },
+            
+            setDateHeader() {
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                let str = new Date().toLocaleDateString('pt-BR', options);
+                document.getElementById('current-date').textContent = str.charAt(0).toUpperCase() + str.slice(1);
+            },
+            
+            // --- Persistência em LocalStorage ---
+            loadData() {
+                try {
+                    const storedTasks = localStorage.getItem('finTasks');
+                    const storedNotes = localStorage.getItem('finNotes');
+                    const storedCalc = localStorage.getItem('finCalc');
+                    const storedDaily = localStorage.getItem('finDailyRoutines');
+                    
+                    if (storedTasks) this.data.tasks = JSON.parse(storedTasks);
+                    if (storedNotes) this.data.notes = JSON.parse(storedNotes);
+                    if (storedCalc) this.data.calcHistory = JSON.parse(storedCalc);
+                    
+                    if (storedDaily) {
+                        this.data.dailyRoutines = JSON.parse(storedDaily);
+                    } else {
+                        // Sugestões iniciais de rotina que podem ser livremente excluídas ou editadas
+                        this.data.dailyRoutines = [
+                            { id: 'dr_1', title: 'Conciliação bancária e checagem de extratos matinais', period: 'Manhã', category: 'Tesouraria', note: 'Até às 10:00 • Principais contas e saldos', completedDates: [], createdAt: new Date().toISOString() },
+                            { id: 'dr_2', title: 'Conferência de recebimentos (Pix, Boletos e TEF)', period: 'Manhã', category: 'Contas a Receber', note: 'Identificar créditos não conciliados', completedDates: [], createdAt: new Date().toISOString() },
+                            { id: 'dr_3', title: 'Autorização e agendamento de pagamentos com vencimento hoje', period: 'Tarde', category: 'Contas a Pagar', note: 'Conferir limites de transferência', completedDates: [], createdAt: new Date().toISOString() },
+                            { id: 'dr_4', title: 'Conferência e fechamento do fluxo de caixa diário', period: 'Final do Dia', category: 'Fechamento', note: 'Lançar saldo final e relatórios', completedDates: [], createdAt: new Date().toISOString() }
+                        ];
+                        localStorage.setItem('finDailyRoutines', JSON.stringify(this.data.dailyRoutines));
+                    }
+                } catch(e) {
+                    console.error("Erro ao carregar dados do localStorage", e);
+                }
+            },
+            
+            saveData() {
+                localStorage.setItem('finTasks', JSON.stringify(this.data.tasks));
+                localStorage.setItem('finNotes', JSON.stringify(this.data.notes));
+                localStorage.setItem('finCalc', JSON.stringify(this.data.calcHistory));
+                localStorage.setItem('finDailyRoutines', JSON.stringify(this.data.dailyRoutines));
+                this.showToast('Dados salvos no seu computador!');
+            },
+            
+            showToast(msg = 'Dados salvos com sucesso!') {
+                const t = document.getElementById('toast');
+                document.getElementById('toast-msg').textContent = msg;
+                t.classList.add('show');
+                setTimeout(() => t.classList.remove('show'), 2800);
+            },
+            
+            // --- Navegação entre Abas ---
+            switchTab(tabId) {
+                this.currentTab = tabId;
+                this.closeSidebar();
+                
+                // Reseta classes nos botões laterais
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('bg-gradient-to-r', 'from-sky-100/90', 'to-pastel-periwinkle', 'text-fem-700', 'dark:from-sky-900/40', 'dark:to-indigo-950/40', 'dark:text-sky-200', 'shadow-sm');
+                    btn.classList.add('text-slate-600', 'dark:text-slate-300');
+                });
+                
+                const activeNav = document.getElementById(`nav-${tabId}`);
+                if(activeNav) {
+                    activeNav.classList.add('bg-gradient-to-r', 'from-sky-100/90', 'to-pastel-periwinkle', 'text-fem-700', 'dark:from-sky-900/40', 'dark:to-indigo-950/40', 'dark:text-sky-200', 'shadow-sm');
+                    activeNav.classList.remove('text-slate-600', 'dark:text-slate-300');
+                }
+                
+                // Oculta abas
+                document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                const targetTab = document.getElementById(`tab-${tabId}`);
+                if(targetTab) targetTab.classList.add('active');
+                
+                // Títulos e subtítulos dinâmicos
+                const titles = {
+                    'dashboard': { title: 'Visão Geral & Cockpit', sub: 'Status de prioridades e notas de apoio do dia' },
+                    'timeline': { title: 'Acompanhamento Temporal', sub: 'Visão detalhada por Dia, Mês e Ano (Atividades Passadas e Futuras)' },
+                    'daily-routine': { title: 'Atividades Diárias Constantes', sub: 'Demandas e rotinas diárias com liberdade para adicionar e retirar a qualquer momento' },
+                    'tasks': { title: 'Gerenciador de Tarefas', sub: 'Cadastro corporativo e filtragem dinâmica' },
+                    'checklist': { title: 'Checklist do Dia', sub: 'Plano de execução focado nas atividades de hoje' },
+                    'performance': { title: 'Histórico & Performance', sub: 'Auditoria de conclusões e diagnóstico de gargalos' },
+                    'calculator': { title: 'Calculadora Financeira', sub: 'Ferramentas de juros, multas, margens e descontos' }
+                };
+                
+                if(titles[tabId]) {
+                    document.getElementById('page-title').innerHTML = titles[tabId].title;
+                    document.getElementById('page-subtitle').textContent = titles[tabId].sub;
+                }
+                
+                this.refreshCurrentTab();
+            },
+            
+            refreshCurrentTab() {
+                if(this.currentTab === 'dashboard') {
+                    this.renderDashboard();
+                    this.renderNotes();
+                    this.renderDashDailyRoutine();
+                } else if(this.currentTab === 'timeline') {
+                    this.renderTimeline();
+                } else if(this.currentTab === 'daily-routine') {
+                    this.renderDailyRoutineTab();
+                } else if(this.currentTab === 'tasks') {
+                    this.renderTasksList();
+                } else if(this.currentTab === 'checklist') {
+                    this.renderChecklist();
+                    this.renderChecklistDailyRoutine();
+                } else if(this.currentTab === 'performance') {
+                    this.renderPerformance();
+                    setTimeout(() => this.updateChart(), 60);
+                } else if(this.currentTab === 'calculator') {
+                    this.renderCalcHistory();
+                }
+                this.updateDailyBadge();
+            },
+            
+            // --- Utilitários de Data & Formatação ---
+            generateId() { return Date.now().toString(36) + Math.random().toString(36).substring(2, 7); },
+            formatCurrency(val) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val); },
+            
+            formatDateBR(dateStr) {
+                if(!dateStr) return '';
+                const parts = dateStr.split('-');
+                if(parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+                return dateStr;
+            },
+            
+            parseDateParts(dateStr) {
+                if(!dateStr) return null;
+                const p = dateStr.split('-');
+                if(p.length !== 3) return null;
+                return { year: parseInt(p[0], 10), month: parseInt(p[1], 10) - 1, day: parseInt(p[2], 10) };
+            },
+
+            isToday(dateStr) {
+                if(!dateStr) return false;
+                const today = new Date();
+                const p = this.parseDateParts(dateStr);
+                if(!p) return false;
+                return p.day === today.getDate() && p.month === today.getMonth() && p.year === today.getFullYear();
+            },
+
+            isPast(dateStr) {
+                if(!dateStr) return false;
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                const p = this.parseDateParts(dateStr);
+                if(!p) return false;
+                const target = new Date(p.year, p.month, p.day);
+                return target < today;
+            },
+
+            isFuture(dateStr) {
+                if(!dateStr) return false;
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                const p = this.parseDateParts(dateStr);
+                if(!p) return false;
+                const target = new Date(p.year, p.month, p.day);
+                return target > today;
+            },
+
+            isTodayOrPast(dateStr) {
+                return this.isToday(dateStr) || this.isPast(dateStr);
+            },
+            
+            // ==============================================
+            // MÓDULO DO CRONOGRAMA TEMPORAL (DIA, MÊS, ANO)
+            // ==============================================
+            setTimelineView(view) {
+                this.timeline.view = view;
+                
+                // Atualiza estilos dos botões de alternância
+                const buttons = ['day', 'month', 'year'];
+                buttons.forEach(v => {
+                    const btn = document.getElementById(`timeline-btn-${v}`);
+                    const viewDiv = document.getElementById(`timeline-view-${v}`);
+                    if(v === view) {
+                        btn.className = 'timeline-tab-btn flex-1 md:flex-initial px-5 py-2 rounded-xl text-xs font-extrabold transition-all duration-200 bg-white dark:bg-fem-cardDark text-fem-600 dark:text-sky-300 shadow-sm';
+                        viewDiv.classList.remove('hidden');
+                    } else {
+                        btn.className = 'timeline-tab-btn flex-1 md:flex-initial px-5 py-2 rounded-xl text-xs font-extrabold transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-fem-600';
+                        viewDiv.classList.add('hidden');
+                    }
+                });
+                
+                this.renderTimeline();
+            },
+
+            renderTimeline() {
+                this.timeline.statusFilter = document.getElementById('timeline-status-filter').value;
+                if(this.timeline.view === 'day') {
+                    this.renderTimelineDay();
+                } else if(this.timeline.view === 'month') {
+                    this.renderTimelineMonth();
+                } else if(this.timeline.view === 'year') {
+                    this.renderTimelineYear();
+                }
+            },
+
+            // --- Sub-visão DIA ---
+            renderTimelineDay() {
+                const dayStr = this.timeline.selectedDay;
+                document.getElementById('timeline-day-picker').value = dayStr;
+                
+                const p = this.parseDateParts(dayStr);
+                const dateObj = new Date(p.year, p.month, p.day);
+                
+                // Formatação do título do dia
+                const dayTitle = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+                document.getElementById('timeline-day-display').textContent = dayTitle;
+                
+                // Badge de status do dia
+                const badgeEl = document.getElementById('timeline-day-badge');
+                if(this.isToday(dayStr)) {
+                    badgeEl.innerHTML = `<span class="bg-sky-100 text-fem-700 dark:bg-sky-950/70 dark:text-sky-300 px-2 py-0.5 rounded-full font-bold">Hoje • Dia Atual</span>`;
+                } else if(this.isPast(dayStr)) {
+                    badgeEl.innerHTML = `<span class="bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 px-2 py-0.5 rounded-full font-bold">Histórico Passado</span>`;
+                } else {
+                    badgeEl.innerHTML = `<span class="bg-indigo-50 text-indigo-600 dark:bg-indigo-950/70 dark:text-indigo-300 px-2 py-0.5 rounded-full font-bold">Planejamento Futuro</span>`;
+                }
+
+                // Filtragem de tarefas para a data selecionada
+                let dayTasks = this.data.tasks.filter(t => t.dueDate === dayStr);
+                if(this.timeline.statusFilter !== 'all') {
+                    dayTasks = dayTasks.filter(t => t.status === this.timeline.statusFilter);
+                }
+
+                const total = dayTasks.length;
+                const done = dayTasks.filter(t => t.status === 'done').length;
+                const pending = total - done;
+
+                document.getElementById('timeline-day-total').textContent = total;
+                document.getElementById('timeline-day-done').textContent = done;
+                document.getElementById('timeline-day-pending').textContent = pending;
+
+                const c = document.getElementById('timeline-day-tasks');
+                const empty = document.getElementById('timeline-day-empty');
+                c.innerHTML = '';
+
+                if(dayTasks.length === 0) {
+                    empty.classList.remove('hidden');
+                } else {
+                    empty.classList.add('hidden');
+                    dayTasks.forEach(t => {
+                        c.innerHTML += this.createTaskCardHtml(t);
+                    });
+                }
+            },
+
+            timelinePrevDay() {
+                const p = this.parseDateParts(this.timeline.selectedDay);
+                const d = new Date(p.year, p.month, p.day);
+                d.setDate(d.getDate() - 1);
+                this.timeline.selectedDay = d.toISOString().split('T')[0];
+                this.renderTimelineDay();
+            },
+
+            timelineNextDay() {
+                const p = this.parseDateParts(this.timeline.selectedDay);
+                const d = new Date(p.year, p.month, p.day);
+                d.setDate(d.getDate() + 1);
+                this.timeline.selectedDay = d.toISOString().split('T')[0];
+                this.renderTimelineDay();
+            },
+
+            timelineGoToday() {
+                this.timeline.selectedDay = new Date().toISOString().split('T')[0];
+                this.renderTimelineDay();
+            },
+
+            onTimelineDatePickerChange(val) {
+                if(val) {
+                    this.timeline.selectedDay = val;
+                    this.renderTimelineDay();
+                }
+            },
+
+            quickAddForCurrentDay() {
+                document.getElementById('task-date').value = this.timeline.selectedDay;
+                this.switchTab('tasks');
+                document.getElementById('task-title').focus();
+            },
+
+            // --- Sub-visão MÊS ---
+            renderTimelineMonth() {
+                const monthNames = [
+                    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+                ];
+                const m = this.timeline.selectedMonth;
+                const y = this.timeline.selectedYear;
+                
+                document.getElementById('timeline-month-display').textContent = `${monthNames[m]} de ${y}`;
+                
+                // Tarefas do mês
+                const monthTasks = this.data.tasks.filter(t => {
+                    const p = this.parseDateParts(t.dueDate);
+                    return p && p.year === y && p.month === m;
+                });
+
+                document.getElementById('timeline-month-stat-badge').textContent = `${monthTasks.length} atividades em ${monthNames[m]}`;
+
+                // Renderiza o Calendário em Grade
+                this.renderCalendarGrid(y, m, monthTasks);
+
+                // Separa tarefas passadas e futuras dentro deste mês
+                const pastContainer = document.getElementById('timeline-month-past');
+                const pastEmpty = document.getElementById('timeline-month-past-empty');
+                const futureContainer = document.getElementById('timeline-month-future');
+                const futureEmpty = document.getElementById('timeline-month-future-empty');
+
+                pastContainer.innerHTML = '';
+                futureContainer.innerHTML = '';
+
+                const pastTasks = monthTasks.filter(t => this.isPast(t.dueDate));
+                const futureTasks = monthTasks.filter(t => this.isToday(t.dueDate) || this.isFuture(t.dueDate));
+
+                if(pastTasks.length === 0) pastEmpty.classList.remove('hidden');
+                else {
+                    pastEmpty.classList.add('hidden');
+                    pastTasks.forEach(t => { pastContainer.innerHTML += this.createMiniTaskHtml(t); });
+                }
+
+                if(futureTasks.length === 0) futureEmpty.classList.remove('hidden');
+                else {
+                    futureEmpty.classList.add('hidden');
+                    futureTasks.forEach(t => { futureContainer.innerHTML += this.createMiniTaskHtml(t); });
+                }
+            },
+
+            renderCalendarGrid(year, month, monthTasks) {
+                const grid = document.getElementById('timeline-calendar-grid');
+                grid.innerHTML = '';
+
+                const firstDayIndex = new Date(year, month, 1).getDay(); // 0 (Dom) a 6 (Sab)
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                // Espaçamento para o início do mês
+                for(let i = 0; i < firstDayIndex; i++) {
+                    grid.innerHTML += `<div class="h-20 sm:h-24 p-1 rounded-2xl bg-sky-50/20 dark:bg-fem-navy/20 opacity-30 border border-transparent"></div>`;
+                }
+
+                // Células dos dias
+                const todayStr = new Date().toISOString().split('T')[0];
+
+                for(let day = 1; day <= daysInMonth; day++) {
+                    const dayString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const tasksForDay = monthTasks.filter(t => t.dueDate === dayString);
+
+                    const isCurrent = dayString === todayStr;
+                    const borderCls = isCurrent ? 'border-2 border-fem-500 shadow-soft-blue bg-white dark:bg-fem-cardDark' : 'border border-sky-100 dark:border-fem-borderDark bg-white/70 dark:bg-fem-cardDark/60 hover:bg-white dark:hover:bg-fem-cardDark';
+
+                    // Marcadores de bolinhas
+                    const doneCount = tasksForDay.filter(t => t.status === 'done').length;
+                    const pendCount = tasksForDay.length - doneCount;
+
+                    let badgesHtml = '';
+                    if(tasksForDay.length > 0) {
+                        badgesHtml = `
+                            <div class="flex items-center gap-1 mt-1 flex-wrap">
+                                ${pendCount > 0 ? `<span class="w-2 h-2 rounded-full bg-pink-500" title="${pendCount} pendente(s)"></span>` : ''}
+                                ${doneCount > 0 ? `<span class="w-2 h-2 rounded-full bg-emerald-500" title="${doneCount} concluída(s)"></span>` : ''}
+                                <span class="text-[9px] font-extrabold text-slate-500 dark:text-slate-400 ml-0.5">${tasksForDay.length}</span>
+                            </div>
+                        `;
+                    }
+
+                    grid.innerHTML += `
+                        <div onclick="app.selectDayFromCalendar('${dayString}')" class="h-20 sm:h-24 p-2 rounded-2xl ${borderCls} flex flex-col justify-between cursor-pointer transition-all hover:scale-[1.02] shadow-card-light">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-black ${isCurrent ? 'text-fem-600 dark:text-sky-300 bg-sky-100 dark:bg-sky-900/60 px-1.5 py-0.5 rounded-lg' : 'text-slate-700 dark:text-slate-300'}">
+                                    ${day}
+                                </span>
+                                ${isCurrent ? '<i class="fas fa-sparkle text-[9px] text-accent-pink"></i>' : ''}
+                            </div>
+                            ${badgesHtml}
+                        </div>
+                    `;
+                }
+            },
+
+            selectDayFromCalendar(dayStr) {
+                this.timeline.selectedDay = dayStr;
+                this.setTimelineView('day');
+            },
+
+            timelinePrevMonth() {
+                if(this.timeline.selectedMonth === 0) {
+                    this.timeline.selectedMonth = 11;
+                    this.timeline.selectedYear--;
+                } else {
+                    this.timeline.selectedMonth--;
+                }
+                this.renderTimelineMonth();
+            },
+
+            timelineNextMonth() {
+                if(this.timeline.selectedMonth === 11) {
+                    this.timeline.selectedMonth = 0;
+                    this.timeline.selectedYear++;
+                } else {
+                    this.timeline.selectedMonth++;
+                }
+                this.renderTimelineMonth();
+            },
+
+            timelineGoCurrentMonth() {
+                const now = new Date();
+                this.timeline.selectedMonth = now.getMonth();
+                this.timeline.selectedYear = now.getFullYear();
+                this.renderTimelineMonth();
+            },
+
+            // --- Sub-visão ANO ---
+            renderTimelineYear() {
+                const y = this.timeline.selectedYear;
+                document.getElementById('timeline-year-display').textContent = y;
+
+                const yearTasks = this.data.tasks.filter(t => {
+                    const p = this.parseDateParts(t.dueDate);
+                    return p && p.year === y;
+                });
+
+                document.getElementById('timeline-year-summary').textContent = `${yearTasks.length} atividades cadastradas em ${y}`;
+
+                const grid = document.getElementById('timeline-year-grid');
+                grid.innerHTML = '';
+
+                const monthNames = [
+                    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+                ];
+
+                const currentMonth = new Date().getMonth();
+                const currentYear = new Date().getFullYear();
+
+                for(let m = 0; m < 12; m++) {
+                    const mTasks = yearTasks.filter(t => {
+                        const p = this.parseDateParts(t.dueDate);
+                        return p && p.month === m;
+                    });
+
+                    const done = mTasks.filter(t => t.status === 'done').length;
+                    const pending = mTasks.length - done;
+                    const pct = mTasks.length === 0 ? 0 : Math.round((done / mTasks.length) * 100);
+
+                    const isCurrent = (y === currentYear && m === currentMonth);
+                    const borderCls = isCurrent ? 'border-2 border-fem-500 shadow-soft-blue bg-white dark:bg-fem-cardDark' : 'border border-sky-100 dark:border-fem-borderDark bg-white dark:bg-fem-cardDark';
+
+                    grid.innerHTML += `
+                        <div class="p-5 rounded-3xl ${borderCls} shadow-card-light flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <h5 class="text-sm font-black text-slate-800 dark:text-white">${monthNames[m]}</h5>
+                                    ${isCurrent ? '<span class="text-[10px] font-bold bg-sky-100 dark:bg-sky-900/60 text-fem-600 dark:text-sky-300 px-2 py-0.5 rounded-full">Vigente</span>' : ''}
+                                </div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400 font-medium mb-3">
+                                    <span>${mTasks.length} atividades</span> &bull; 
+                                    <span class="text-emerald-600 dark:text-emerald-400">${done} feitas</span>
+                                </div>
+                                <div class="w-full bg-sky-100 dark:bg-fem-navy rounded-full h-2 mb-4">
+                                    <div class="bg-gradient-to-r from-sky-400 to-fem-600 h-2 rounded-full" style="width: ${pct}%"></div>
+                                </div>
+                            </div>
+                            <button onclick="app.selectMonthFromYear(${m})" class="w-full py-2 bg-sky-50 dark:bg-fem-navy hover:bg-sky-100 dark:hover:bg-fem-borderDark text-fem-600 dark:text-sky-300 text-xs font-bold rounded-xl transition-colors">
+                                Explorar ${monthNames[m]} &rarr;
+                            </button>
+                        </div>
+                    `;
+                }
+            },
+
+            selectMonthFromYear(m) {
+                this.timeline.selectedMonth = m;
+                this.setTimelineView('month');
+            },
+
+            timelinePrevYear() {
+                this.timeline.selectedYear--;
+                this.renderTimelineYear();
+            },
+
+            timelineNextYear() {
+                this.timeline.selectedYear++;
+                this.renderTimelineYear();
+            },
+
+            // --- Geradores de HTML de Tarefas ---
+            createTaskCardHtml(t) {
+                const isDone = t.status === 'done';
+                const overdue = this.isPast(t.dueDate) && !isDone;
+                
+                let borderAccent = 'border-l-4 border-l-sky-400';
+                if(t.priority === 'alta') borderAccent = 'border-l-4 border-l-pink-500';
+                if(t.priority === 'media') borderAccent = 'border-l-4 border-l-amber-400';
+
+                return `
+                    <div class="bg-white dark:bg-fem-navy/50 p-4 rounded-2xl border border-sky-100 dark:border-fem-borderDark ${borderAccent} flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-card-light">
+                        <div class="flex items-start">
+                            <button onclick="app.toggleTaskStatus('${t.id}')" class="mt-0.5 mr-3 text-slate-300 dark:text-slate-600 hover:text-emerald-500 transition-colors">
+                                <i class="${isDone ? 'fas fa-check-circle text-emerald-500 text-xl' : 'far fa-circle text-xl'}"></i>
+                            </button>
+                            <div>
+                                <div class="font-bold text-slate-800 dark:text-slate-100 text-xs ${isDone ? 'line-through text-slate-400' : ''}">
+                                    ${t.title}
+                                    ${overdue ? '<span class="text-[10px] bg-pink-100 text-pink-700 font-extrabold px-1.5 py-0.5 rounded-full ml-1.5">Atrasada</span>' : ''}
+                                </div>
+                                <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium flex items-center gap-2">
+                                    <span><i class="fas fa-folder-open text-sky-400"></i> ${t.category}</span>
+                                    <span>&bull;</span>
+                                    <span><i class="far fa-calendar text-slate-400"></i> ${this.formatDateBR(t.dueDate)}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-1.5 self-end sm:self-auto">
+                            <button onclick="app.cyclePriority('${t.id}')" class="p-1.5 text-slate-400 hover:text-slate-600 bg-sky-50 dark:bg-fem-cardDark rounded-lg" title="Mudar Prioridade"><i class="fas fa-sort-amount-up"></i></button>
+                            <button onclick="app.editTask('${t.id}')" class="p-1.5 text-sky-500 hover:text-sky-700 bg-sky-50 dark:bg-fem-cardDark rounded-lg" title="Editar"><i class="fas fa-pen"></i></button>
+                            <button onclick="app.deleteTask('${t.id}')" class="p-1.5 text-pink-400 hover:text-pink-600 bg-pink-50 dark:bg-fem-cardDark rounded-lg" title="Excluir"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            createMiniTaskHtml(t) {
+                const isDone = t.status === 'done';
+                return `
+                    <div class="p-3 bg-sky-50/50 dark:bg-fem-navy/40 rounded-2xl border border-sky-100/70 dark:border-fem-borderDark flex items-center justify-between">
+                        <div class="flex items-center gap-2 min-w-0 pr-2">
+                            <button onclick="app.toggleTaskStatus('${t.id}')" class="text-slate-300 dark:text-slate-600 hover:text-emerald-500">
+                                <i class="${isDone ? 'fas fa-check-circle text-emerald-500' : 'far fa-circle'} text-sm"></i>
+                            </button>
+                            <div class="min-w-0">
+                                <div class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate ${isDone ? 'line-through text-slate-400' : ''}">
+                                    ${t.title}
+                                </div>
+                                <div class="text-[10px] text-slate-400">${this.formatDateBR(t.dueDate)} &bull; ${t.category}</div>
+                            </div>
+                        </div>
+                        <button onclick="app.editTask('${t.id}')" class="text-xs text-sky-500 hover:underline flex-shrink-0">Editar</button>
+                    </div>
+                `;
+            },
+
+            // ==============================================
+            // MÓDULO DE TAREFAS (CORE CRUD)
+            // ==============================================
+            saveTask(e) {
+                e.preventDefault();
+                const id = document.getElementById('task-id').value;
+                const title = document.getElementById('task-title').value.trim();
+                const desc = document.getElementById('task-desc').value.trim();
+                const cat = document.getElementById('task-category').value;
+                const prio = document.getElementById('task-prio').value;
+                const date = document.getElementById('task-date').value;
+                const showDash = document.getElementById('task-show-dash').checked;
+                
+                if(!title || !date) return;
+                
+                if(id) {
+                    const t = this.data.tasks.find(x => x.id === id);
+                    if(t) {
+                        t.title = title; t.desc = desc; t.category = cat;
+                        t.priority = prio; t.dueDate = date; t.showDash = showDash;
+                    }
+                } else {
+                    this.data.tasks.push({
+                        id: this.generateId(),
+                        title, desc, category: cat, priority: prio, dueDate: date,
+                        showDash, status: 'pending', createdAt: new Date().toISOString()
+                    });
+                }
+                
+                this.saveData();
+                this.resetTaskForm();
+                this.refreshCurrentTab();
+            },
+            
+            resetTaskForm() {
+                document.getElementById('form-task').reset();
+                document.getElementById('task-id').value = '';
+                document.getElementById('task-date').value = new Date().toISOString().split('T')[0];
+                document.getElementById('task-form-title').innerHTML = `<i class="fas fa-plus-circle text-fem-500"></i> <span>Cadastrar Nova Tarefa Financeira</span>`;
+            },
+            
+            editTask(id) {
+                const t = this.data.tasks.find(x => x.id === id);
+                if(t) {
+                    document.getElementById('task-id').value = t.id;
+                    document.getElementById('task-title').value = t.title;
+                    document.getElementById('task-desc').value = t.desc || '';
+                    document.getElementById('task-category').value = t.category;
+                    document.getElementById('task-prio').value = t.priority;
+                    document.getElementById('task-date').value = t.dueDate;
+                    document.getElementById('task-show-dash').checked = t.showDash !== false;
+                    
+                    document.getElementById('task-form-title').innerHTML = `<i class="fas fa-pen text-accent-pink"></i> <span>Edição de Tarefa Financeira</span>`;
+                    this.switchTab('tasks');
+                    document.querySelector('.overflow-auto').scrollTo({top: 0, behavior: 'smooth'});
+                }
+            },
+            
+            deleteTask(id) {
+                if(confirm('Tem certeza que deseja excluir esta atividade?')) {
+                    this.data.tasks = this.data.tasks.filter(t => t.id !== id);
+                    this.saveData();
+                    this.refreshCurrentTab();
+                }
+            },
+            
+            toggleTaskStatus(id) {
+                const t = this.data.tasks.find(x => x.id === id);
+                if(t) {
+                    t.status = t.status === 'pending' ? 'done' : 'pending';
+                    t.completedAt = t.status === 'done' ? new Date().toISOString() : null;
+                    this.saveData();
+                    this.refreshCurrentTab();
+                }
+            },
+            
+            hideTaskDash(id) {
+                const t = this.data.tasks.find(x => x.id === id);
+                if(t) {
+                    t.showDash = false;
+                    this.saveData();
+                    this.refreshCurrentTab();
+                }
+            },
+
+            cyclePriority(id) {
+                const t = this.data.tasks.find(x => x.id === id);
+                if(t) {
+                    if(t.priority === 'alta') t.priority = 'media';
+                    else if(t.priority === 'media') t.priority = 'baixa';
+                    else t.priority = 'alta';
+                    this.saveData();
+                    this.refreshCurrentTab();
+                }
+            },
+            
+            // --- Dashboard Render ---
+            renderDashboard() {
+                const pending = this.data.tasks.filter(t => t.status === 'pending');
+                const doneToday = this.data.tasks.filter(t => t.status === 'done' && t.completedAt && this.isToday(t.completedAt.split('T')[0]));
+                const high = pending.filter(t => t.priority === 'alta');
+                
+                document.getElementById('dash-count-pend').textContent = pending.length;
+                document.getElementById('dash-count-high').textContent = high.length;
+                document.getElementById('dash-count-done').textContent = doneToday.length;
+                
+                const totalTodayTasks = this.data.tasks.filter(t => this.isTodayOrPast(t.dueDate)).length;
+                let prod = 0;
+                if(totalTodayTasks > 0) {
+                    prod = Math.round((doneToday.length / totalTodayTasks) * 100);
+                    if(prod > 100) prod = 100;
+                }
+                document.getElementById('dash-productivity').textContent = prod + '%';
+                
+                const dashTasks = pending.filter(t => t.showDash !== false);
+                this.renderDashGroup('dash-tasks-high', 'dash-high-empty', dashTasks.filter(t => t.priority === 'alta'), 'alta');
+                this.renderDashGroup('dash-tasks-medium', 'dash-medium-empty', dashTasks.filter(t => t.priority === 'media'), 'media');
+                this.renderDashGroup('dash-tasks-low', 'dash-low-empty', dashTasks.filter(t => t.priority === 'baixa'), 'baixa');
+            },
+            
+            renderDashGroup(containerId, emptyId, tasks, prioType) {
+                const c = document.getElementById(containerId);
+                const e = document.getElementById(emptyId);
+                c.innerHTML = '';
+                
+                if(tasks.length === 0) {
+                    e.classList.remove('hidden');
+                    return;
+                }
+                e.classList.add('hidden');
+                
+                tasks.sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate)).forEach(t => {
+                    c.innerHTML += this.createTaskCardHtml(t);
+                });
+            },
+            
+            toggleLowPriority() {
+                const c = document.getElementById('dash-tasks-low-container');
+                const i = document.getElementById('dash-low-icon');
+                c.classList.toggle('hidden');
+                i.classList.toggle('rotate-180');
+            },
+            
+            // --- Lembretes / Post-its ---
+            addNote(e) {
+                e.preventDefault();
+                const title = document.getElementById('note-title').value.trim();
+                const text = document.getElementById('note-text').value.trim();
+                const isFixed = document.getElementById('note-fixed').checked;
+                
+                if(!title || !text) return;
+                
+                this.data.notes.push({ id: this.generateId(), title, text, isFixed, createdAt: new Date().toISOString() });
+                this.saveData();
+                document.getElementById('form-note').reset();
+                this.renderNotes();
+            },
+            
+            deleteNote(id) {
+                this.data.notes = this.data.notes.filter(n => n.id !== id);
+                this.saveData();
+                this.renderNotes();
+            },
+            
+            clearTempNotes() {
+                if(confirm("Deseja limpar todos os lembretes temporários não fixados?")) {
+                    this.data.notes = this.data.notes.filter(n => n.isFixed);
+                    this.saveData();
+                    this.renderNotes();
+                }
+            },
+            
+            renderNotes() {
+                const c = document.getElementById('notes-list');
+                c.innerHTML = '';
+                
+                const sorted = [...this.data.notes].sort((a,b) => (a.isFixed === b.isFixed)? 0 : a.isFixed ? -1 : 1);
+                
+                if(sorted.length === 0) {
+                    c.innerHTML = '<div class="text-xs text-slate-400 italic text-center py-4 border border-dashed border-sky-200 dark:border-fem-borderDark rounded-2xl">Nenhum lembrete registrado.</div>';
+                    return;
+                }
+                
+                sorted.forEach(n => {
+                    const bgClass = n.isFixed ? 'bg-gradient-to-r from-amber-50 to-pink-50/50 dark:from-amber-950/20 dark:to-pink-950/20 border-amber-200 dark:border-amber-800/40' : 'bg-white dark:bg-fem-cardDark border-sky-100 dark:border-fem-borderDark';
+                    const icon = n.isFixed ? '<i class="fas fa-thumbtack text-amber-500"></i>' : '<i class="far fa-clock text-slate-400"></i>';
+                    
+                    c.innerHTML += `
+                        <div class="p-3.5 rounded-2xl border ${bgClass} shadow-card-light relative group transition-transform hover:-translate-y-0.5">
+                            <button onclick="app.deleteNote('${n.id}')" class="absolute top-2 right-2 text-slate-400 hover:text-pink-500 opacity-0 group-hover:opacity-100 transition-opacity bg-white dark:bg-fem-cardDark rounded-full w-5 h-5 flex items-center justify-center shadow-sm">
+                                <i class="fas fa-times text-[10px]"></i>
+                            </button>
+                            <div class="font-bold text-xs text-slate-800 dark:text-slate-100 pr-5 flex items-start gap-1.5">
+                                <span class="mt-0.5">${icon}</span> 
+                                <span>${n.title}</span>
+                            </div>
+                            <div class="text-[11px] text-slate-600 dark:text-slate-300 mt-1.5 font-medium whitespace-pre-wrap leading-relaxed pl-4">${n.text}</div>
+                        </div>
+                    `;
+                });
+            },
+            
+            // --- Tabela Geral de Tarefas ---
+            renderTasksList() {
+                const sFilter = document.getElementById('filter-search').value.toLowerCase();
+                const stFilter = document.getElementById('filter-status').value;
+                const catFilter = document.getElementById('filter-cat').value;
+                
+                let filtered = this.data.tasks.filter(t => {
+                    let match = true;
+                    if(sFilter && !t.title.toLowerCase().includes(sFilter) && !(t.desc && t.desc.toLowerCase().includes(sFilter))) match = false;
+                    if(stFilter !== 'all' && t.status !== stFilter) match = false;
+                    if(catFilter !== 'all' && t.category !== catFilter) match = false;
+                    return match;
+                });
+                
+                filtered.sort((a,b) => {
+                    if(a.status !== b.status) return a.status === 'pending' ? -1 : 1;
+                    const da = new Date(a.dueDate).getTime();
+                    const db = new Date(b.dueDate).getTime();
+                    if(da !== db) return da - db;
+                    const pMap = {alta:3, media:2, baixa:1};
+                    return pMap[b.priority] - pMap[a.priority];
+                });
+                
+                const tbody = document.getElementById('tasks-table-body');
+                tbody.innerHTML = '';
+                
+                if(filtered.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-xs text-slate-400 italic">Nenhum registro encontrado.</td></tr>`;
+                    return;
+                }
+                
+                filtered.forEach(t => {
+                    const isDone = t.status === 'done';
+                    const iconClass = isDone ? 'fa-check-circle text-emerald-500' : 'fa-circle text-slate-300 dark:text-slate-600';
+                    const prioColor = t.priority === 'alta' ? 'text-pink-500' : (t.priority === 'media' ? 'text-amber-500' : 'text-sky-400');
+                    const textClass = isDone ? 'line-through text-slate-400' : 'text-slate-800 dark:text-slate-100 font-bold';
+                    
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-sky-50/50 dark:hover:bg-fem-navy/40 transition-colors group">
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <button onclick="app.toggleTaskStatus('${t.id}')" class="text-lg hover:scale-110 transition-transform">
+                                    <i class="far ${iconClass}"></i>
+                                </button>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="${textClass} flex items-center gap-2">
+                                    <i class="fas fa-circle text-[7px] ${prioColor}" title="Prioridade ${t.priority}"></i>
+                                    ${t.title} 
+                                </div>
+                                ${t.desc ? `<div class="text-[11px] text-slate-400 line-clamp-1 mt-0.5">${t.desc}</div>` : ''}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2.5 py-1 inline-flex text-[10px] font-extrabold rounded-full bg-sky-100 text-fem-700 dark:bg-sky-950/70 dark:text-sky-300">
+                                    ${t.category}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-xs font-semibold ${isDone ? 'text-slate-400' : 'text-slate-600 dark:text-slate-300'}">
+                                ${this.formatDateBR(t.dueDate)}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium">
+                                <button onclick="app.editTask('${t.id}')" class="text-sky-600 hover:text-sky-800 dark:text-sky-400 mr-3 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fas fa-edit"></i></button>
+                                <button onclick="app.deleteTask('${t.id}')" class="text-pink-500 hover:text-pink-700 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fas fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            },
+            
+            // --- Checklist do Dia ---
+            renderChecklist() {
+                const pendDiv = document.getElementById('checklist-pending');
+                const doneDiv = document.getElementById('checklist-done');
+                const pendEmpty = document.getElementById('checklist-pending-empty');
+                const doneEmpty = document.getElementById('checklist-done-empty');
+                
+                pendDiv.innerHTML = ''; doneDiv.innerHTML = '';
+                
+                const pending = this.data.tasks.filter(t => t.status === 'pending' && this.isTodayOrPast(t.dueDate));
+                const doneToday = this.data.tasks.filter(t => t.status === 'done' && t.completedAt && this.isToday(t.completedAt.split('T')[0]));
+                
+                const total = pending.length + doneToday.length;
+                const pct = total === 0 ? 0 : Math.round((doneToday.length / total) * 100);
+                
+                document.getElementById('checklist-progress-text').textContent = `${doneToday.length} de ${total}`;
+                document.getElementById('checklist-progress-bar').style.width = `${pct}%`;
+                
+                if(pending.length === 0) pendEmpty.classList.remove('hidden'); else pendEmpty.classList.add('hidden');
+                if(doneToday.length === 0) doneEmpty.classList.remove('hidden'); else doneEmpty.classList.add('hidden');
+                
+                pending.sort((a,b) => {
+                    const pMap = {alta:3, media:2, baixa:1};
+                    return pMap[b.priority] - pMap[a.priority];
+                }).forEach(t => {
+                    const overdue = !this.isToday(t.dueDate) ? `<span class="bg-pink-100 text-pink-700 text-[10px] px-1.5 py-0.5 rounded-full font-bold ml-2">Atrasada</span>` : '';
+                    let borderLeft = 'border-l-sky-300';
+                    if(t.priority === 'alta') borderLeft = 'border-l-pink-500';
+                    if(t.priority === 'media') borderLeft = 'border-l-amber-400';
+
+                    pendDiv.innerHTML += `
+                        <label class="flex items-center p-3.5 bg-white dark:bg-fem-cardDark border border-l-4 border-sky-100 dark:border-fem-borderDark ${borderLeft} rounded-2xl shadow-card-light cursor-pointer transition-all hover:bg-sky-50/40">
+                            <input type="checkbox" onchange="app.toggleTaskStatus('${t.id}')" class="w-4 h-4 rounded border-sky-300 text-fem-500 focus:ring-fem-400 cursor-pointer">
+                            <div class="ml-3.5 flex-1">
+                                <div class="text-xs font-bold text-slate-800 dark:text-slate-100">${t.title} ${overdue}</div>
+                                <div class="text-[10px] font-medium text-slate-400 mt-0.5">${t.category}</div>
+                            </div>
+                        </label>
+                    `;
+                });
+                
+                doneToday.forEach(t => {
+                    doneDiv.innerHTML += `
+                        <label class="flex items-center p-3.5 bg-sky-50/30 dark:bg-fem-navy/40 border border-sky-100 dark:border-fem-borderDark rounded-2xl cursor-pointer">
+                            <input type="checkbox" checked onchange="app.toggleTaskStatus('${t.id}')" class="w-4 h-4 rounded border-sky-300 text-fem-500 focus:ring-fem-400 cursor-pointer">
+                            <div class="ml-3.5 flex-1 line-through text-slate-400">
+                                <div class="text-xs font-bold">${t.title}</div>
+                                <div class="text-[10px] mt-0.5">${t.category}</div>
+                            </div>
+                        </label>
+                    `;
+                });
+            },
+            
+            // --- Histórico & Diagnóstico ---
+            renderPerformance() {
+                const done = this.data.tasks.filter(t => t.status === 'done').sort((a,b) => new Date(b.completedAt) - new Date(a.completedAt)).slice(0, 50);
+                const tbody = document.getElementById('history-table-body');
+                tbody.innerHTML = '';
+                if(done.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-6 text-center text-xs text-slate-400 italic">Histórico limpo. Nenhuma tarefa concluída.</td></tr>`;
+                } else {
+                    done.forEach(t => {
+                        const dateObj = new Date(t.completedAt);
+                        const fmtDate = dateObj.toLocaleDateString('pt-BR') + ' às ' + dateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                        tbody.innerHTML += `
+                            <tr class="hover:bg-sky-50/50 dark:hover:bg-fem-navy/30 transition-colors">
+                                <td class="px-6 py-3 whitespace-nowrap text-xs text-slate-500 font-medium">${fmtDate}</td>
+                                <td class="px-6 py-3 text-xs text-slate-800 dark:text-slate-200 font-bold">${t.title}</td>
+                                <td class="px-6 py-3 whitespace-nowrap text-xs text-slate-400">${t.category}</td>
+                            </tr>
+                        `;
+                    });
+                }
+                
+                // Análise de Negligenciadas (> 7 dias)
+                const now = new Date().getTime();
+                const neglected = this.data.tasks.filter(t => {
+                    if(t.status === 'done') return false;
+                    const created = new Date(t.createdAt).getTime();
+                    return (now - created) / (1000 * 3600 * 24) > 7;
+                });
+                
+                const nList = document.getElementById('perf-neglected');
+                const nEmpty = document.getElementById('perf-neglected-empty');
+                nList.innerHTML = '';
+                if(neglected.length === 0) {
+                    nEmpty.classList.remove('hidden');
+                } else {
+                    nEmpty.classList.add('hidden');
+                    neglected.sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt)).forEach(t => {
+                        const days = Math.floor((now - new Date(t.createdAt).getTime()) / (1000 * 3600 * 24));
+                        nList.innerHTML += `
+                            <li class="flex flex-col sm:flex-row sm:items-center justify-between bg-pink-50/40 dark:bg-pink-950/20 p-3.5 rounded-2xl border border-pink-200/80 dark:border-pink-900/40 gap-2">
+                                <div class="min-w-0 pr-2">
+                                    <div class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${t.title}</div>
+                                    <div class="text-[11px] text-pink-600 dark:text-pink-400 font-semibold mt-0.5">
+                                        <i class="far fa-clock"></i> Pendente há ${days} dias (desde ${this.formatDateBR(t.createdAt.split('T')[0])})
+                                    </div>
+                                </div>
+                                <button onclick="app.editTask('${t.id}')" class="text-xs bg-white dark:bg-fem-cardDark px-3 py-1.5 rounded-xl font-bold text-pink-600 dark:text-pink-300 border border-pink-200 dark:border-pink-800 shadow-sm self-end sm:self-auto">
+                                    Revisar
+                                </button>
+                            </li>
+                        `;
+                    });
+                }
+            },
+            
+            updateChart() {
+                const ctx = document.getElementById('chart-status').getContext('2d');
+                const pending = this.data.tasks.filter(t => t.status === 'pending').length;
+                const done = this.data.tasks.filter(t => t.status === 'done').length;
+                
+                const isDark = document.documentElement.classList.contains('dark');
+                const textColor = isDark ? '#94a9cc' : '#64748b';
+                
+                if(this.chartInstance) this.chartInstance.destroy();
+                if(pending === 0 && done === 0) return;
+                
+                this.chartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Concluídas', 'Pendentes'],
+                        datasets: [{
+                            data: [done, pending],
+                            backgroundColor: ['#10b981', '#0ea5e9'],
+                            borderWidth: isDark ? 2 : 0,
+                            borderColor: isDark ? '#13203c' : '#ffffff',
+                            hoverOffset: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { 
+                                position: 'bottom', 
+                                labels: { color: textColor, font: { family: "'Plus Jakarta Sans', sans-serif", weight: 'bold' } } 
+                            }
+                        },
+                        cutout: '72%'
+                    }
+                });
+            },
+            
+            // --- Calculadoras Financeiras ---
+            logCalc(type, result, details) {
+                this.data.calcHistory.unshift({
+                    id: this.generateId(),
+                    type, result, details, timestamp: new Date().toISOString()
+                });
+                if(this.data.calcHistory.length > 50) this.data.calcHistory.pop();
+                this.saveData();
+                this.renderCalcHistory();
+            },
+            
+            clearCalcHistory() {
+                if(confirm("Deseja apagar o histórico de cálculos?")) {
+                    this.data.calcHistory = [];
+                    this.saveData();
+                    this.renderCalcHistory();
+                }
+            },
+            
+            renderCalcHistory() {
+                const list = document.getElementById('calc-history-list');
+                const empty = document.getElementById('calc-history-empty');
+                list.innerHTML = '';
+                
+                if(this.data.calcHistory.length === 0) {
+                    empty.classList.remove('hidden');
+                } else {
+                    empty.classList.add('hidden');
+                    this.data.calcHistory.forEach(c => {
+                        const dt = new Date(c.timestamp);
+                        const tm = dt.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+                        const dStr = dt.toLocaleDateString('pt-BR');
+
+                        list.innerHTML += `
+                            <li class="p-3.5 bg-sky-50/40 dark:bg-fem-navy/40 rounded-2xl border border-sky-100 dark:border-fem-borderDark flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-xl bg-white dark:bg-fem-cardDark text-fem-500 flex items-center justify-center flex-shrink-0 shadow-sm">
+                                    <i class="fas fa-calculator text-xs"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex justify-between items-start mb-0.5">
+                                        <div class="text-xs font-bold text-slate-800 dark:text-slate-100">${c.type}</div>
+                                        <div class="text-[10px] text-slate-400">${dStr} ${tm}</div>
+                                    </div>
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 mb-1.5">${c.details}</div>
+                                    <div class="text-xs font-extrabold text-fem-600 dark:text-sky-300 bg-white dark:bg-fem-cardDark inline-block px-2.5 py-1 rounded-lg border border-sky-100 dark:border-fem-borderDark">${c.result}</div>
+                                </div>
+                            </li>
+                        `;
+                    });
+                }
+            },
+            
+            calcJurosMulta() {
+                const val = parseFloat(document.getElementById('calc-jm-valor').value);
+                const dias = parseInt(document.getElementById('calc-jm-dias').value);
+                const multaPct = parseFloat(document.getElementById('calc-jm-multa').value);
+                const jurosAM = parseFloat(document.getElementById('calc-jm-juros').value);
+                
+                if(isNaN(val) || isNaN(dias) || isNaN(multaPct) || isNaN(jurosAM)) { alert('Por favor, preencha todos os campos.'); return; }
+                
+                const multaVal = val * (multaPct / 100);
+                const jurosAD = (jurosAM / 30) / 100;
+                const jurosVal = val * jurosAD * dias;
+                const total = val + multaVal + jurosVal;
+                
+                const resDiv = document.getElementById('res-jm');
+                resDiv.innerHTML = `
+                    <div class="text-[10px] uppercase font-bold text-pink-600 dark:text-pink-400 mb-1">Total Atualizado</div>
+                    ${this.formatCurrency(total)}
+                    <div class="text-xs font-medium text-slate-600 dark:text-slate-400 mt-1">
+                        Multa: ${this.formatCurrency(multaVal)} | Juros: ${this.formatCurrency(jurosVal)}
+                    </div>
+                `;
+                resDiv.classList.remove('hidden');
+                this.logCalc('Juros e Multa', this.formatCurrency(total), `Base: ${this.formatCurrency(val)} | Atraso: ${dias} dias`);
+            },
+            
+            calcVariacao() {
+                const ant = parseFloat(document.getElementById('calc-var-ant').value);
+                const atu = parseFloat(document.getElementById('calc-var-atu').value);
+                
+                if(isNaN(ant) || isNaN(atu) || ant === 0) { alert('Valor base anterior não pode ser zero.'); return; }
+                
+                const varPct = ((atu - ant) / ant) * 100;
+                const diff = atu - ant;
+                const color = varPct >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-pink-600 dark:text-pink-400';
+                const bg = varPct >= 0 ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200' : 'bg-pink-50 dark:bg-pink-950/30 border-pink-200';
+                const sign = varPct >= 0 ? '+' : '';
+                
+                const resDiv = document.getElementById('res-var');
+                resDiv.className = `mt-4 p-4 rounded-2xl text-center text-lg font-black ${color} ${bg} border`;
+                resDiv.innerHTML = `
+                    <div class="text-[10px] uppercase font-bold mb-1 opacity-80">Variação Apurada</div>
+                    ${sign}${varPct.toFixed(2)}%
+                    <div class="text-xs font-medium mt-1 opacity-80">Diferença Absoluta: ${sign}${this.formatCurrency(diff)}</div>
+                `;
+                resDiv.classList.remove('hidden');
+                this.logCalc('Variação MoM/YoY', `${sign}${varPct.toFixed(2)}%`, `De ${this.formatCurrency(ant)} para ${this.formatCurrency(atu)}`);
+            },
+            
+            calcDesconto() {
+                const vf = parseFloat(document.getElementById('calc-desc-vf').value);
+                const tx = parseFloat(document.getElementById('calc-desc-taxa').value);
+                
+                if(isNaN(vf) || isNaN(tx)) { alert('Preencha os valores para calcular.'); return; }
+                
+                const desc = vf * (tx / 100);
+                const vp = vf - desc;
+                
+                const resDiv = document.getElementById('res-desc');
+                resDiv.innerHTML = `
+                    <div class="text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400 mb-1">Valor Líquido</div>
+                    ${this.formatCurrency(vp)}
+                    <div class="text-xs font-medium text-slate-600 dark:text-slate-400 mt-1">Desconto Concedido: ${this.formatCurrency(desc)}</div>
+                `;
+                resDiv.classList.remove('hidden');
+                this.logCalc('Desconto Simples', this.formatCurrency(vp), `Valor Base: ${this.formatCurrency(vf)} | Taxa: ${tx}%`);
+            },
+
+            // ==============================================
+            // MÓDULO DE ATIVIDADES DIÁRIAS CONSTANTES (ROTINA)
+            // ==============================================
+            isDailyDoneToday(routine) {
+                if(!routine || !Array.isArray(routine.completedDates)) return false;
+                const todayStr = new Date().toISOString().split('T')[0];
+                return routine.completedDates.includes(todayStr);
+            },
+
+            toggleDailyRoutine(id) {
+                const r = this.data.dailyRoutines.find(x => x.id === id);
+                if(r) {
+                    if(!Array.isArray(r.completedDates)) r.completedDates = [];
+                    const todayStr = new Date().toISOString().split('T')[0];
+                    const idx = r.completedDates.indexOf(todayStr);
+                    let wasDone = false;
+                    if(idx !== -1) {
+                        r.completedDates.splice(idx, 1);
+                        wasDone = false;
+                    } else {
+                        r.completedDates.push(todayStr);
+                        wasDone = true;
+                    }
+                    this.saveData();
+                    this.refreshDailyRoutineViews();
+                    if(wasDone) {
+                        this.showToast('🌸 Atividade marcada como feita hoje! Parabéns!');
+                    } else {
+                        this.showToast('Atividade desmarcada.');
+                    }
+                }
+            },
+
+            saveDailyRoutine(e) {
+                e.preventDefault();
+                const id = document.getElementById('daily-id').value;
+                const title = document.getElementById('daily-title').value.trim();
+                const period = document.getElementById('daily-period').value;
+                const category = document.getElementById('daily-category').value;
+                const note = document.getElementById('daily-note').value.trim();
+
+                if(!title) return;
+
+                if(id) {
+                    const r = this.data.dailyRoutines.find(x => x.id === id);
+                    if(r) {
+                        r.title = title;
+                        r.period = period;
+                        r.category = category;
+                        r.note = note;
+                        this.showToast('Demanda diária atualizada com sucesso!');
+                    }
+                } else {
+                    this.data.dailyRoutines.push({
+                        id: 'dr_' + this.generateId(),
+                        title,
+                        period,
+                        category,
+                        note,
+                        completedDates: [],
+                        createdAt: new Date().toISOString()
+                    });
+                    this.showToast('Nova atividade diária adicionada à sua rotina!');
+                }
+
+                this.saveData();
+                this.cancelEditDailyRoutine();
+                this.refreshDailyRoutineViews();
+            },
+
+            quickAddDailyFromDash(e) {
+                e.preventDefault();
+                const input = document.getElementById('dash-daily-input');
+                const title = input.value.trim();
+                const period = document.getElementById('dash-daily-period').value;
+
+                if(!title) return;
+
+                this.data.dailyRoutines.push({
+                    id: 'dr_' + this.generateId(),
+                    title,
+                    period,
+                    category: 'Operacional',
+                    note: '',
+                    completedDates: [],
+                    createdAt: new Date().toISOString()
+                });
+
+                this.saveData();
+                input.value = '';
+                this.showToast('Atividade diária adicionada!');
+                this.refreshDailyRoutineViews();
+            },
+
+            deleteDailyRoutine(id) {
+                const r = this.data.dailyRoutines.find(x => x.id === id);
+                const title = r ? `"${r.title}"` : 'esta atividade';
+                if(confirm(`Deseja retirar ${title} da sua lista de atividades diárias?`)) {
+                    this.data.dailyRoutines = this.data.dailyRoutines.filter(x => x.id !== id);
+                    this.saveData();
+                    this.refreshDailyRoutineViews();
+                    this.showToast('Demanda retirada da sua rotina diária.');
+                }
+            },
+
+            editDailyRoutine(id) {
+                const r = this.data.dailyRoutines.find(x => x.id === id);
+                if(r) {
+                    this.switchTab('daily-routine');
+                    document.getElementById('daily-id').value = r.id;
+                    document.getElementById('daily-title').value = r.title;
+                    document.getElementById('daily-period').value = r.period || 'Manhã';
+                    document.getElementById('daily-category').value = r.category || 'Tesouraria';
+                    document.getElementById('daily-note').value = r.note || '';
+
+                    document.getElementById('daily-form-title').innerHTML = `<i class="fas fa-pen text-accent-pink"></i> <span>Editar Atividade Constante</span>`;
+                    document.getElementById('daily-form-submit-btn').innerHTML = `<i class="fas fa-save mr-1.5"></i> Salvar Alterações`;
+                    document.getElementById('daily-form-cancel-btn').classList.remove('hidden');
+
+                    document.getElementById('daily-title').focus();
+                    document.querySelector('.overflow-auto').scrollTo({top: 0, behavior: 'smooth'});
+                }
+            },
+
+            cancelEditDailyRoutine() {
+                const form = document.getElementById('form-daily-routine');
+                if(form) form.reset();
+                const idEl = document.getElementById('daily-id');
+                if(idEl) idEl.value = '';
+                const titleEl = document.getElementById('daily-form-title');
+                if(titleEl) titleEl.innerHTML = `<i class="fas fa-plus-circle text-fem-500"></i> <span>Cadastrar Nova Atividade Constante</span>`;
+                const submitBtn = document.getElementById('daily-form-submit-btn');
+                if(submitBtn) submitBtn.innerHTML = `<i class="fas fa-plus mr-1.5"></i> Adicionar Atividade`;
+                const cancelBtn = document.getElementById('daily-form-cancel-btn');
+                if(cancelBtn) cancelBtn.classList.add('hidden');
+            },
+
+            resetDailyRoutinesToday() {
+                if(confirm("Deseja reiniciar todas as marcações de hoje das atividades diárias para começar o dia novamente?")) {
+                    const todayStr = new Date().toISOString().split('T')[0];
+                    this.data.dailyRoutines.forEach(r => {
+                        if(Array.isArray(r.completedDates)) {
+                            r.completedDates = r.completedDates.filter(d => d !== todayStr);
+                        }
+                    });
+                    this.saveData();
+                    this.refreshDailyRoutineViews();
+                    this.showToast('Marcações de hoje foram reiniciadas com sucesso!');
+                }
+            },
+
+            restoreDefaultDailyRoutines() {
+                if(confirm("Deseja restaurar as sugestões corporativas de rotina diária?")) {
+                    const defaultRoutines = [
+                        { id: 'dr_1', title: 'Conciliação bancária e checagem de extratos matinais', period: 'Manhã', category: 'Tesouraria', note: 'Até às 10:00 • Principais contas e saldos', completedDates: [], createdAt: new Date().toISOString() },
+                        { id: 'dr_2', title: 'Conferência de recebimentos (Pix, Boletos e TEF)', period: 'Manhã', category: 'Contas a Receber', note: 'Identificar créditos não conciliados', completedDates: [], createdAt: new Date().toISOString() },
+                        { id: 'dr_3', title: 'Autorização e agendamento de pagamentos com vencimento hoje', period: 'Tarde', category: 'Contas a Pagar', note: 'Conferir limites de transferência', completedDates: [], createdAt: new Date().toISOString() },
+                        { id: 'dr_4', title: 'Conferência e fechamento do fluxo de caixa diário', period: 'Final do Dia', category: 'Fechamento', note: 'Lançar saldo final e relatórios', completedDates: [], createdAt: new Date().toISOString() }
+                    ];
+                    this.data.dailyRoutines = defaultRoutines;
+                    this.saveData();
+                    this.refreshDailyRoutineViews();
+                    this.showToast('Sugestões de rotina diária restauradas!');
+                }
+            },
+
+            setDailyPeriodFilter(period) {
+                this.dailyFilter.period = period;
+                document.querySelectorAll('.daily-period-pill').forEach(btn => {
+                    btn.className = 'daily-period-pill px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-500 hover:bg-sky-50 dark:hover:bg-fem-navy dark:text-slate-400 transition-all flex-shrink-0';
+                });
+                const mapId = {
+                    'all': 'daily-filter-all',
+                    'Manhã': 'daily-filter-manha',
+                    'Tarde': 'daily-filter-tarde',
+                    'Final do Dia': 'daily-filter-final'
+                };
+                const activeBtn = document.getElementById(mapId[period] || 'daily-filter-all');
+                if(activeBtn) {
+                    activeBtn.className = 'daily-period-pill px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-sky-100 text-fem-700 dark:bg-sky-900/60 dark:text-sky-300 transition-all flex-shrink-0';
+                }
+                this.renderDailyRoutineTab();
+            },
+
+            setDailyStatusFilter(status) {
+                this.dailyFilter.status = status;
+                this.renderDailyRoutineTab();
+            },
+
+            onDailySearchInput(val) {
+                this.dailyFilter.search = (val || '').toLowerCase().trim();
+                this.renderDailyRoutineTab();
+            },
+
+            renderDailyRoutineTab() {
+                const total = this.data.dailyRoutines.length;
+                const doneCount = this.data.dailyRoutines.filter(r => this.isDailyDoneToday(r)).length;
+                const pct = total === 0 ? 0 : Math.round((doneCount / total) * 100);
+
+                const doneEl = document.getElementById('daily-stat-done');
+                const totalEl = document.getElementById('daily-stat-total');
+                const pctEl = document.getElementById('daily-stat-pct');
+                const barEl = document.getElementById('daily-stat-progress-bar');
+                if(doneEl) doneEl.textContent = doneCount;
+                if(totalEl) totalEl.textContent = total;
+                if(pctEl) pctEl.textContent = `${pct}% concluído`;
+                if(barEl) barEl.style.width = `${pct}%`;
+
+                // Filtragem
+                let list = this.data.dailyRoutines.filter(r => {
+                    if(this.dailyFilter.period !== 'all' && r.period !== this.dailyFilter.period) return false;
+                    const isDone = this.isDailyDoneToday(r);
+                    if(this.dailyFilter.status === 'pending' && isDone) return false;
+                    if(this.dailyFilter.status === 'done' && !isDone) return false;
+                    if(this.dailyFilter.search) {
+                        const s = this.dailyFilter.search;
+                        const matchTitle = r.title && r.title.toLowerCase().includes(s);
+                        const matchNote = r.note && r.note.toLowerCase().includes(s);
+                        const matchCat = r.category && r.category.toLowerCase().includes(s);
+                        if(!matchTitle && !matchNote && !matchCat) return false;
+                    }
+                    return true;
+                });
+
+                // Ordenação: Pendentes primeiro, depois por período
+                const periodOrder = { 'Manhã': 1, 'Tarde': 2, 'Final do Dia': 3, 'Qualquer Horário': 4 };
+                list.sort((a,b) => {
+                    const doneA = this.isDailyDoneToday(a) ? 1 : 0;
+                    const doneB = this.isDailyDoneToday(b) ? 1 : 0;
+                    if(doneA !== doneB) return doneA - doneB;
+                    return (periodOrder[a.period] || 5) - (periodOrder[b.period] || 5);
+                });
+
+                const container = document.getElementById('daily-routine-list');
+                const empty = document.getElementById('daily-routine-empty');
+                if(!container) return;
+
+                container.innerHTML = '';
+                if(list.length === 0) {
+                    if(empty) empty.classList.remove('hidden');
+                } else {
+                    if(empty) empty.classList.add('hidden');
+                    list.forEach(r => {
+                        container.innerHTML += this.createDailyRoutineCardHtml(r);
+                    });
+                }
+            },
+
+            createDailyRoutineCardHtml(r) {
+                const isDone = this.isDailyDoneToday(r);
+                const periodColors = {
+                    'Manhã': { bg: 'bg-sky-50 dark:bg-sky-950/60', text: 'text-fem-600 dark:text-sky-300', icon: 'fa-sun-haze', label: 'Manhã' },
+                    'Tarde': { bg: 'bg-amber-50 dark:bg-amber-950/60', text: 'text-amber-600 dark:text-amber-300', icon: 'fa-sun', label: 'Tarde' },
+                    'Final do Dia': { bg: 'bg-indigo-50 dark:bg-indigo-950/60', text: 'text-indigo-600 dark:text-indigo-300', icon: 'fa-moon-stars', label: 'Final do Dia' },
+                    'Qualquer Horário': { bg: 'bg-purple-50 dark:bg-purple-950/60', text: 'text-purple-600 dark:text-purple-300', icon: 'fa-bolt', label: 'Livre' }
+                };
+                const pInfo = periodColors[r.period] || periodColors['Qualquer Horário'];
+                const totalDoneCount = (r.completedDates || []).length;
+                
+                return `
+                    <div class="bg-white dark:bg-fem-cardDark p-4 md:p-5 rounded-2xl border ${isDone ? 'border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/20' : 'border-sky-100 dark:border-fem-borderDark'} shadow-card-light transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 group">
+                        <div class="flex items-start gap-3.5 min-w-0 flex-1">
+                            <button onclick="app.toggleDailyRoutine('${r.id}')" class="mt-0.5 text-2xl transition-transform hover:scale-110 flex-shrink-0 ${isDone ? 'text-emerald-500' : 'text-slate-300 dark:text-slate-600 hover:text-emerald-500'}">
+                                <i class="${isDone ? 'fas fa-check-circle' : 'far fa-circle'}"></i>
+                            </button>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-sm font-extrabold text-slate-800 dark:text-slate-100 ${isDone ? 'line-through text-slate-400 dark:text-slate-500' : ''}">
+                                        ${r.title}
+                                    </span>
+                                    ${isDone ? '<span class="text-[10px] font-black uppercase bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full"><i class="fas fa-check text-[9px] mr-1"></i>Feito Hoje</span>' : ''}
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-1.5 flex-wrap">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-bold ${pInfo.bg} ${pInfo.text}">
+                                        <i class="fas ${pInfo.icon} text-[10px]"></i> ${r.period}
+                                    </span>
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-sky-50 dark:bg-fem-navy text-slate-600 dark:text-slate-300 border border-sky-100 dark:border-fem-borderDark">
+                                        <i class="fas fa-folder text-[10px] text-sky-400"></i> ${r.category || 'Geral'}
+                                    </span>
+                                    ${r.note ? `<span class="text-[11px] text-slate-400 flex items-center gap-1"><i class="far fa-clock"></i> ${r.note}</span>` : ''}
+                                    <span class="text-[10px] text-slate-400 ml-auto sm:ml-0 font-medium"><i class="fas fa-fire-flame-curved text-amber-400 text-[10px]"></i> ${totalDoneCount}x realizada(s)</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-2 self-end sm:self-auto flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-sky-100 dark:border-fem-borderDark w-full sm:w-auto justify-end">
+                            <button onclick="app.editDailyRoutine('${r.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-sky-50 dark:bg-fem-navy text-fem-600 dark:text-sky-300 hover:bg-sky-100 transition-colors flex items-center gap-1.5" title="Editar atividade">
+                                <i class="fas fa-pen text-[10px]"></i>
+                                <span>Editar</span>
+                            </button>
+                            <button onclick="app.deleteDailyRoutine('${r.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-pink-50 dark:bg-pink-950/40 text-pink-600 dark:text-pink-300 hover:bg-pink-100 dark:hover:bg-pink-900/60 transition-colors flex items-center gap-1.5" title="Retirar da rotina diária">
+                                <i class="fas fa-trash-alt text-[10px]"></i>
+                                <span>Retirar</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            renderDashDailyRoutine() {
+                const total = this.data.dailyRoutines.length;
+                const doneCount = this.data.dailyRoutines.filter(r => this.isDailyDoneToday(r)).length;
+                const pct = total === 0 ? 0 : Math.round((doneCount / total) * 100);
+
+                const badge = document.getElementById('dash-daily-progress-badge');
+                const pctEl = document.getElementById('dash-daily-pct');
+                const bar = document.getElementById('dash-daily-progress-bar');
+                const listEl = document.getElementById('dash-daily-list');
+                const emptyEl = document.getElementById('dash-daily-empty');
+
+                if(badge) badge.textContent = `${doneCount} de ${total} feitas`;
+                if(pctEl) pctEl.textContent = `${pct}%`;
+                if(bar) bar.style.width = `${pct}%`;
+
+                if(!listEl) return;
+                listEl.innerHTML = '';
+
+                if(total === 0) {
+                    if(emptyEl) emptyEl.classList.remove('hidden');
+                } else {
+                    if(emptyEl) emptyEl.classList.add('hidden');
+                    // Ordena: pendentes primeiro
+                    const sorted = [...this.data.dailyRoutines].sort((a,b) => {
+                        const doneA = this.isDailyDoneToday(a) ? 1 : 0;
+                        const doneB = this.isDailyDoneToday(b) ? 1 : 0;
+                        return doneA - doneB;
+                    });
+                    sorted.forEach(r => {
+                        listEl.innerHTML += this.createDashDailyItemHtml(r);
+                    });
+                }
+            },
+
+            createDashDailyItemHtml(r) {
+                const isDone = this.isDailyDoneToday(r);
+                const periodColors = {
+                    'Manhã': { text: 'text-sky-500', icon: 'fa-sun-haze' },
+                    'Tarde': { text: 'text-amber-500', icon: 'fa-sun' },
+                    'Final do Dia': { text: 'text-indigo-400', icon: 'fa-moon-stars' },
+                    'Qualquer Horário': { text: 'text-purple-400', icon: 'fa-bolt' }
+                };
+                const pInfo = periodColors[r.period] || periodColors['Qualquer Horário'];
+
+                return `
+                    <div class="p-3 bg-sky-50/40 dark:bg-fem-navy/40 rounded-2xl border border-sky-100/70 dark:border-fem-borderDark flex items-center justify-between gap-3 group hover:bg-sky-50/80 transition-colors">
+                        <div class="flex items-center gap-3 min-w-0 flex-1">
+                            <button onclick="app.toggleDailyRoutine('${r.id}')" class="text-xl transition-transform hover:scale-110 flex-shrink-0 ${isDone ? 'text-emerald-500' : 'text-slate-300 dark:text-slate-600 hover:text-emerald-500'}">
+                                <i class="${isDone ? 'fas fa-check-circle' : 'far fa-circle'}"></i>
+                            </button>
+                            <div class="min-w-0 flex-1">
+                                <div class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate ${isDone ? 'line-through text-slate-400' : ''}">
+                                    ${r.title}
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center gap-2 mt-0.5">
+                                    <span class="${pInfo.text} font-bold"><i class="fas ${pInfo.icon} text-[9px]"></i> ${r.period}</span>
+                                    <span>&bull;</span>
+                                    <span>${r.category || 'Geral'}</span>
+                                    ${r.note ? `<span>&bull;</span><span>${r.note}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 flex-shrink-0">
+                            <button onclick="app.deleteDailyRoutine('${r.id}')" class="p-1.5 rounded-lg text-slate-400 hover:text-pink-500 hover:bg-pink-50 dark:hover:bg-pink-950/40 transition-colors opacity-70 group-hover:opacity-100" title="Retirar da rotina">
+                                <i class="fas fa-trash-alt text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            renderChecklistDailyRoutine() {
+                const listEl = document.getElementById('checklist-daily-list');
+                const statEl = document.getElementById('checklist-daily-stat');
+                const emptyEl = document.getElementById('checklist-daily-empty');
+                if(!listEl) return;
+
+                const total = this.data.dailyRoutines.length;
+                const doneCount = this.data.dailyRoutines.filter(r => this.isDailyDoneToday(r)).length;
+                if(statEl) statEl.textContent = `${doneCount} de ${total} concluídas`;
+
+                listEl.innerHTML = '';
+                if(total === 0) {
+                    if(emptyEl) emptyEl.classList.remove('hidden');
+                } else {
+                    if(emptyEl) emptyEl.classList.add('hidden');
+                    this.data.dailyRoutines.forEach(r => {
+                        const isDone = this.isDailyDoneToday(r);
+                        listEl.innerHTML += `
+                            <label class="flex items-center p-3 bg-white dark:bg-fem-cardDark border border-sky-100 dark:border-fem-borderDark rounded-2xl shadow-card-light cursor-pointer hover:bg-sky-50/40 transition-colors">
+                                <input type="checkbox" ${isDone ? 'checked' : ''} onchange="app.toggleDailyRoutine('${r.id}')" class="w-4 h-4 rounded border-sky-300 text-fem-500 focus:ring-fem-400 cursor-pointer">
+                                <div class="ml-3 flex-1 min-w-0">
+                                    <div class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate ${isDone ? 'line-through text-slate-400' : ''}">
+                                        ${r.title}
+                                    </div>
+                                    <div class="text-[10px] text-slate-400 mt-0.5">
+                                        ${r.period} &bull; ${r.category || 'Geral'}
+                                    </div>
+                                </div>
+                            </label>
+                        `;
+                    });
+                }
+            },
+
+            refreshDailyRoutineViews() {
+                this.renderDashDailyRoutine();
+                this.renderDailyRoutineTab();
+                this.renderChecklistDailyRoutine();
+                this.updateDailyBadge();
+            },
+
+            updateDailyBadge() {
+                const total = (this.data.dailyRoutines || []).length;
+                const doneCount = (this.data.dailyRoutines || []).filter(r => this.isDailyDoneToday(r)).length;
+                const badge = document.getElementById('nav-daily-badge');
+                if(badge) {
+                    if(total === 0) {
+                        badge.textContent = 'Rotina';
+                    } else if(doneCount === total) {
+                        badge.textContent = 'Feito 🎉';
+                        badge.className = 'text-[10px] bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 font-bold px-1.5 py-0.5 rounded-full';
+                    } else {
+                        badge.textContent = `${doneCount}/${total}`;
+                        badge.className = 'text-[10px] bg-sky-100 dark:bg-sky-900/60 text-fem-700 dark:text-sky-300 font-bold px-1.5 py-0.5 rounded-full';
+                    }
+                }
+            }
+        };
+
+        // Inicialização automática quando o DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
+</html>
